@@ -1,13 +1,13 @@
-package ru.bookstore.mypackage;
+package ru.bookstore.DAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Scanner;
+
 /**
  * Created by Johnny D on 06.10.2014.
  */
-public abstract class BookStoreDAO {
+abstract class BookStoreAccess {
     public static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
     public static final String DB_URL = "jdbc:oracle:thin:@localhost:1521:ORADB10G";
     public static final String LOGIN = "VADIM";
