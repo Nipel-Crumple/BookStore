@@ -19,7 +19,7 @@ public class Client {
             setLogin(login);
             setPassword(password);
         } catch (NullPointerException e) {
-            e.printStackTrace(System.out);
+            System.out.println("Repeat input, please!");
         }
     }
 
