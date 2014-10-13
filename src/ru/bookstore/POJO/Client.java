@@ -12,39 +12,49 @@ public class Client {
     public Client() {
 
     }
-    public Client(int id, String name, String login, String password) {
-        try {
-            setID(id);
-            setName(name);
-            setLogin(login);
-            setPassword(password);
-        } catch (NullPointerException e) {
-            System.out.println("Repeat input, please!");
-        }
+
+    public Client(String name, String login, String password) {
+        setName(name);
+        setLogin(login);
+        setPassword(password);
+        hashCode();
     }
 
-    public int getID() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Client client = (Client) o;
+
+        if (id != client.id) return false;
+        if (!login.equals(client.login)) return false;
+        if (!name.equals(client.name)) return false;
+        if (!password.equals(client.password)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        id = 0;
+        id = 31 * id + name.hashCode();
+        id = 31 * id + login.hashCode();
+        id = 31 * id + password.hashCode();
         return id;
     }
 
-    public void setID(int id) {
-        if (id != 0) {
-            this.id = id;
-        } else {
-            throw new NullPointerException();
-        }
+    public int getID() {
+        return (id != 0) ? id : hashCode();
     }
+
 
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        if (name != null) {
-            this.name = name;
-        } else {
-            throw new NullPointerException();
-        }
+        this.name = name;
     }
 
     public String getLogin() {
@@ -52,44 +62,33 @@ public class Client {
     }
 
     public void setLogin(String login) {
-        if (login != null) {
-            this.login = login;
-        } else {
-            throw new NullPointerException();
-        }
+        this.login = login;
     }
 
-    private String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    private void setPassword(String password) {
+    public void setPassword(String password) {
         if ((password != null) && (this.password == null)) {
             this.password = password;
-        } else if (password == null){
+        } else if (password == null) {
             throw new NullPointerException();
         } else {
             System.out.println("Password was settled early");
         }
     }
 
-    private void changePassword(String oldPassword, String newPassword) {
-        try {
-            if (this.password.equals(oldPassword)) {
-                this.password = newPassword;
-            }
-        } catch(NullPointerException e) {
-            System.out.println("Arguments cannot be null");
+    public void changePassword(String oldPassword, String newPassword) {
+        if (this.password.equals(oldPassword)) {
+            this.password = newPassword;
         }
+        System.out.println("Arguments cannot be null");
     }
 
-    private void changeLogin(String newLogin, String password) {
-        if ((newLogin != null) && (password != null)) {
-            if (this.password.equals(password)) {
-                this.login = newLogin;
-            }
-        } else {
-            throw new NullPointerException();
+    public void changeLogin(String newLogin, String password) {
+        if (this.password.equals(password)) {
+            this.login = newLogin;
         }
     }
 }

@@ -1,0 +1,13 @@
+2014-10-13 15:48:59 FATAL BookStoreAccess:23 - Driver not Found
+2014-10-13 15:48:59 FATAL BookStoreAccess:28 - DataBase Access Error
+2014-10-13 15:49:41 FATAL BookStoreAccess:28 - Driver not Found
+2014-10-13 15:49:55 FATAL BookStoreAccess:28 - Driver not Found
+2014-10-13 15:50:36 FATAL BookStoreAccess:28 - Driver not Found
+2014-10-13 15:52:43 FATAL BookStoreAccess:28 - Driver not Found
+2014-10-13 15:54:39 FATAL BookStoreAccess:28 - Driver not Found
+2014-10-13 15:54:39 ERROR ClientDAO:59 - SQL request error
+2014-10-13 15:55:19 ERROR ClientDAO:73 - Smth's going wrong
+2014-10-13 15:55:59 ERROR ClientDAO:73 - Smth's going wrong
+2014-10-14 00:12:46 ERROR ClientDAO:106 - Cannot add new Client with the same Login
+2014-10-14 00:15:45 ERROR ClientDAO:106 - Cannot add new Client with the same Login
+2014-10-14 00:59:29 DEBUG ClientDAO:100 - Cannot add new Client with the same Login
