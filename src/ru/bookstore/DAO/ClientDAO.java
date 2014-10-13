@@ -113,15 +113,15 @@ public class ClientDAO extends BookStoreAccess {
 
     }
 
-    public static void main(String[] args) {
-        ClientDAO cl = new ClientDAO();
-        Client newClient = new Client("Egor", "Kuznec", "1839Wolper");
-        cl.addNewClient(newClient);
-
-        cl.getAllClients();
-        for (Client temp : cl.getAllClients()) {
-            System.out.println(temp.getName());
-        }
-    }
+//    public static void main(String[] args) {
+//        ClientDAO cl = new ClientDAO();
+//        Client newClient = new Client("Egor", "Kuznec", "1839Wolper");
+//        cl.addNewClient(newClient);
+//
+//        cl.getAllClients();
+//        for (Client temp : cl.getAllClients()) {
+//            System.out.println(temp.getName());
+//        }
+//    }
 
 }
