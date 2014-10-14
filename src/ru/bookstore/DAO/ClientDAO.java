@@ -4,29 +4,21 @@ package ru.bookstore.DAO;
  * Created by Johnny D on 07.10.2014.
  */
 
-
-import org.apache.log4j.Logger;
-import ru.bookstore.POJO.Client;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
-import java.util.Set;
+import org.apache.log4j.Logger;
+
+import ru.bookstore.POJO.Client;
 
 public class ClientDAO extends BookStoreAccess {
 
-    public Set<Client> clientsTree = new TreeSet<Client>(new Comparator<Client>() {
-        @Override
-        public int compare(Client o1, Client o2) {
-            return -o1.getName().compareTo(o2.getName());
-        }
-    });
+    public Set<Client> clientsSet = new HashSet<Client>();
+
     private static final Logger logger = Logger.getLogger("ClientDAO");
 
-    private void readAllClientsFromDB() {
+    private void getAllClientsFromDB() {
         Client newClient;
-        int id;
+        long id = 0;
         String name;
         String login;
         String password;
@@ -37,12 +29,12 @@ public class ClientDAO extends BookStoreAccess {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                id = resultSet.getInt("ID");
+                id = resultSet.getLong("ID");
                 name = resultSet.getString("NAME");
                 login = resultSet.getString("LOGIN");
                 password = resultSet.getString("PASSWORD");
-                newClient = new Client(name, login, password);
-                clientsTree.add(newClient);
+                newClient = new Client(id, name, login, password);
+                clientsSet.add(newClient);
             }
 
         } catch (SQLException e1) {
@@ -52,11 +44,11 @@ public class ClientDAO extends BookStoreAccess {
     }
 
     public Set<Client> getAllClients() {
-        readAllClientsFromDB();
-        return clientsTree;
+        getAllClientsFromDB();
+        return clientsSet;
     }
 
-    public Client getClientById(int id) {
+    public Client getClientById(long id) {
         Client newClient = null;
         String name;
         String login;
@@ -70,10 +62,10 @@ public class ClientDAO extends BookStoreAccess {
             name = resultSet.getString("NAME");
             login = resultSet.getString("LOGIN");
             password = resultSet.getString("PASSWORD");
-            newClient = new Client(name, login, password);
-            clientsTree.add(newClient);
+            newClient = new Client(id, name, login, password);
+            clientsSet.add(newClient);
         } catch (SQLException e) {
-            logger.error("Something's going bad");
+            logger.error("Something's going bad in getClientById");
         }
         return newClient;
     }
@@ -86,42 +78,35 @@ public class ClientDAO extends BookStoreAccess {
             PreparedStatement statement = con.prepareStatement(sql);
             ResultSet results = statement.executeQuery();
             results.next();
-            neededClient = getClientById(results.getInt("ID"));
+            neededClient = getClientById(results.getLong("ID"));
         } catch (SQLException e) {
-            logger.debug("There is no client with this login", e);
+            logger.debug("There is no client with this login that's why I can add it");
         }
         return neededClient;
     }
 
-    public void addNewClient(Client newClient) {
+    public Client addNewClient(Client newClient) {
         String sql = "INSERT INTO CLIENT (ID, NAME, LOGIN, PASSWORD) VALUES(?,?,?,?)";
 
-        if (getClientByLogin(newClient.getLogin()) != null) {
-            logger.debug("Cannot add new Client with the same Login");
+        Client neededClient = getClientByLogin(newClient.getLogin());
+        if (neededClient != null) {
+            logger.debug("This login's Client already exists");
+            return neededClient;
         } else {
             try {
                 PreparedStatement statement = con.prepareStatement(sql);
-                statement.setInt(1, newClient.getID());
+                statement.setLong(1, newClient.getID());
                 statement.setString(2, newClient.getName());
                 statement.setString(3, newClient.getLogin());
                 statement.setString(4, newClient.getPassword());
                 statement.execute();
+                return getClientById(newClient.getID());
             } catch (SQLException e) {
                 logger.error("SQL request insert error", e);
             }
         }
+        return neededClient;
 
     }
-
-//    public static void main(String[] args) {
-//        ClientDAO cl = new ClientDAO();
-//        Client newClient = new Client("Egor", "Kuznec", "1839Wolper");
-//        cl.addNewClient(newClient);
-//
-//        cl.getAllClients();
-//        for (Client temp : cl.getAllClients()) {
-//            System.out.println(temp.getName());
-//        }
-//    }
 
 }

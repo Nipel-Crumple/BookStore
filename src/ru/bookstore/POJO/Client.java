@@ -1,13 +1,16 @@
 package ru.bookstore.POJO;
 
+import java.util.UUID;
+
 /**
  * Created by Johnny D on 07.10.2014.
  */
 public class Client {
-    private int id = 0;
+    private long id = 0;
     private String name = null;
     private String login = null;
     private String password = null;
+    private int hash = 0;
 
     public Client() {
 
@@ -17,7 +20,16 @@ public class Client {
         setName(name);
         setLogin(login);
         setPassword(password);
-        hashCode();
+        id = getID();
+        hash = hashCode();
+    }
+
+    public Client(long id, String name, String login, String password) {
+        setName(name);
+        setLogin(login);
+        setPassword(password);
+        this.id = id;
+        hash = hashCode();
     }
 
     @Override
@@ -37,15 +49,23 @@ public class Client {
 
     @Override
     public int hashCode() {
-        id = 0;
-        id = 31 * id + name.hashCode();
-        id = 31 * id + login.hashCode();
-        id = 31 * id + password.hashCode();
-        return id;
+        int result = 0;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + login.hashCode();
+        result = 31 * result + password.hashCode();
+        return result;
     }
 
-    public int getID() {
-        return (id != 0) ? id : hashCode();
+    public void setID() {
+        UUID uuid = UUID.randomUUID();
+        id = -uuid.getLeastSignificantBits();
+    }
+
+    public long getID() {
+        if (id == 0) {
+            setID();
+        }
+        return id;
     }
 
 
