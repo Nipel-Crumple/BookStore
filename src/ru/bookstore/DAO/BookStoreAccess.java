@@ -27,6 +27,5 @@ abstract class BookStoreAccess {
         } catch (ClassNotFoundException e) {
             logger.fatal("Driver not Found");
         }
-
     }
 }

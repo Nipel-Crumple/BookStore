@@ -16,56 +16,68 @@ public class BookDAO extends BookStoreAccess {
 
     private static final Logger logger = Logger.getLogger("BookDAO");
 
-    private void getAllBooksFromDB() {
-        Book newBook;
-        long id;
-        String name;
-        String author;
-        String genre;
-        String sqlRequest = "SELECT * FROM BOOK";
-        ResultSet resultSet;
+    private static String REQUEST_BY_ID = "SELECT * from BOOK where ID = ?";
+    private static String REQUEST_BY_NAME = "SELECT * FROM BOOK WHERE NAME = ?";
+    private static String REQUEST_BY_AUTHOR = "SELECT * FROM BOOK WHERE AUTHOR = ?";
+    private static String REQUEST_INSERT_BOOK = "INSERT INTO BOOK (ID, NAME, AUTHOR, GENRE, PUBLISHING) VALUES(?,?,?,?,?)";
+
+    private static PreparedStatement getBookByIdStmt;
+    static {
         try {
-            PreparedStatement preparedStatement = con.prepareStatement(sqlRequest);
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                id = resultSet.getLong("ID");
-                name = resultSet.getString("NAME");
-                author = resultSet.getString("AUTHOR");
-                genre = resultSet.getString("GENRE");
-                newBook = new Book(id, name, author, genre);
-                bookSet.add(newBook);
-            }
-
-        } catch (SQLException e1) {
-            logger.error("Smth's going wrong in getting all books", e1.getCause());
+            getBookByIdStmt = con.prepareStatement(REQUEST_BY_ID);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in initialising of getting Book by ID", e);
         }
-
     }
 
-    public Set<Book> getAllBooks() {
-        getAllBooksFromDB();
-        return bookSet;
+    private static PreparedStatement getBookByNameStmt;
+    static {
+        try {
+            getBookByNameStmt = con.prepareStatement(REQUEST_BY_NAME);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in initialising of getting Book by Name", e);
+        }
     }
+
+    private static PreparedStatement getBookByAuthorStmt;
+    static {
+        try {
+            getBookByAuthorStmt = con.prepareStatement(REQUEST_BY_AUTHOR);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in initialising of getting Book by Author", e);
+        }
+    }
+
+    private static PreparedStatement insertBookStmt;
+    static {
+        try {
+            insertBookStmt = con.prepareStatement(REQUEST_INSERT_BOOK);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in initialising of insert Book", e);
+        }
+    }
+
 
     public Book getBookById(long id) {
         Book newBook = null;
         String name;
         String author;
         String genre;
-        String sqlRequest = "SELECT * from BOOK where ID=" + id;
+        String publishing;
+
         ResultSet resultSet;
         try {
-            PreparedStatement preparedStatement = con.prepareStatement(sqlRequest);
-            resultSet = preparedStatement.executeQuery(sqlRequest);
+            getBookByIdStmt.setLong(1, id);
+            resultSet = getBookByIdStmt.executeQuery();
             resultSet.next();
             name = resultSet.getString("NAME");
             author = resultSet.getString("AUTHOR");
             genre = resultSet.getString("GENRE");
-            newBook = new Book(id, name, author, genre);
+            publishing = resultSet.getString("PUBLISHING");
+            newBook = new Book(id, name, author, genre, publishing);
             bookSet.add(newBook);
         } catch (SQLException e) {
-            logger.error("Something's going bad in getBookById");
+            logger.error("There is no book with id: " + id);
         }
         return newBook;
     }
@@ -73,10 +85,10 @@ public class BookDAO extends BookStoreAccess {
     public Book getBookByName(String name) {
 
         Book neededBook = null;
-        String sql = "SELECT * FROM BOOK WHERE NAME = '" + name + "'";
+
         try {
-            PreparedStatement statement = con.prepareStatement(sql);
-            ResultSet results = statement.executeQuery();
+            getBookByNameStmt.setString(1, name);
+            ResultSet results = getBookByNameStmt.executeQuery();
             results.next();
             neededBook = getBookById(results.getLong("ID"));
         } catch (SQLException e) {
@@ -95,10 +107,9 @@ public class BookDAO extends BookStoreAccess {
             }
         });
 
-        String sql = "SELECT * FROM BOOK WHERE AUTHOR = '" + author + "'";
         try {
-            PreparedStatement statement = con.prepareStatement(sql);
-            ResultSet results = statement.executeQuery();
+            getBookByAuthorStmt.setString(1, author);
+            ResultSet results = getBookByAuthorStmt.executeQuery();
             while (results.next()) {
                 Book neededBook;
                 neededBook = getBookById(results.getLong("ID"));
@@ -110,28 +121,35 @@ public class BookDAO extends BookStoreAccess {
         return listBook;
     }
 
-    public Book addNewBook(Book newBook) {
-        String sql = "INSERT INTO BOOK (ID, NAME, AUTHOR, GENRE) VALUES(?,?,?,?)";
+    public void addNewBook(Book newBook) {
 
         Book neededBook = getBookByName(newBook.getName());
         if (neededBook != null) {
             logger.debug("This name of Book already exists " + newBook.getName());
-            return neededBook;
         } else {
             try {
-                PreparedStatement statement = con.prepareStatement(sql);
-                statement.setLong(1, newBook.getID());
-                statement.setString(2, newBook.getName());
-                statement.setString(3, newBook.getAuthor());
-                statement.setString(4, newBook.getGenre());
-                statement.execute();
-                return getBookById(newBook.getID());
+                insertBookStmt.setLong(1, newBook.getID());
+                insertBookStmt.setString(2, newBook.getName());
+                insertBookStmt.setString(3, newBook.getAuthor());
+                insertBookStmt.setString(4, newBook.getGenre());
+                insertBookStmt.setString(5, newBook.getPublishing());
+                insertBookStmt.execute();
             } catch (SQLException e) {
                 logger.error("SQL request insert error", e);
             }
         }
-        return neededBook;
-
+    }
+    public static void main(String[] args) {
+        BookDAO bk = new BookDAO();
+        for (Book temp : bk.getBooksByAuthor("Robert Heinlein")) {
+            System.out.println(temp.getName());
+        }
+        Book kop = new Book(213L, "People are CrazY", "John Lee Kooper", "Comedy","Democracy");
+        bk.addNewBook(kop);
+        Book book = bk.getBookById(12);
+        System.out.println(book.getName());
     }
 
 }
+
+

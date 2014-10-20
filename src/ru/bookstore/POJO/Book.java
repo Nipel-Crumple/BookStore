@@ -17,26 +17,25 @@ public class Book {
     private String author = null;
     private String genre = null;
 
+    private String publishing = null;
     private int hash = 0;
 
-    public Book() {
-
-    }
-
-    public Book(String name, String author, String genre) {
+    public Book(String name, String author, String genre, String publishing) {
         setName(name);
         setAuthor(author);
         setGenre(genre);
         setID();
+        setPublishing(publishing);
         hash = hashCode();
     }
 
-    public Book(long id,String name, String author, String genre) {
+    public Book(long id,String name, String author, String genre, String publishing) {
         setName(name);
         setAuthor(author);
         setGenre(genre);
         hash = hashCode();
-        this.id = id;
+        setPublishing(publishing);
+        setID(id);
     }
 
     @Override
@@ -68,6 +67,10 @@ public class Book {
         id = -uuid.getLeastSignificantBits();
     }
 
+    public void setID(long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -91,4 +94,13 @@ public class Book {
     public void setGenre(String genre) {
         this.genre = genre;
     }
+    public String getPublishing() {
+        return publishing;
+    }
+
+    public void setPublishing(String publishing) {
+        this.publishing = publishing;
+    }
+
 }
+

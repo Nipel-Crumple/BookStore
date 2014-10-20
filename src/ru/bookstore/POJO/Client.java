@@ -1,5 +1,6 @@
 package ru.bookstore.POJO;
 
+import org.apache.log4j.Logger;
 import java.util.UUID;
 
 /**
@@ -11,6 +12,7 @@ public class Client {
     private String login = null;
     private String password = null;
     private int hash = 0;
+    private static final Logger logger = Logger.getLogger("Client");
 
     public Client() {
 
@@ -95,20 +97,26 @@ public class Client {
         } else if (password == null) {
             throw new NullPointerException();
         } else {
-            System.out.println("Password was settled early");
+            logger.debug("Password was settled early");
         }
     }
 
-    public void changePassword(String oldPassword, String newPassword) {
+    public boolean changePassword(String oldPassword, String newPassword) {
         if (this.password.equals(oldPassword)) {
             this.password = newPassword;
+            return true;
+        } else {
+            return false;
         }
-        System.out.println("Arguments cannot be null");
     }
 
-    public void changeLogin(String newLogin, String password) {
+    public boolean changeLogin(String newLogin, String password) {
         if (this.password.equals(password)) {
             this.login = newLogin;
+            return true;
+        } else {
+
+            return false;
         }
     }
 }
