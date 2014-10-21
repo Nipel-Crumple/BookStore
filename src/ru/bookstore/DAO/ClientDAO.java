@@ -23,6 +23,7 @@ public class ClientDAO extends BookStoreAccess {
     private static String CHANGE_PASSWORD_REQUEST = "UPDATE CLIENT SET PASSWORD = ? WHERE ID= ?";
 
     private static PreparedStatement getClientByIdStmt;
+
     static {
         try {
             getClientByIdStmt = con.prepareStatement(REQUEST_BY_ID);
@@ -32,6 +33,7 @@ public class ClientDAO extends BookStoreAccess {
     }
 
     private static PreparedStatement getClientByLoginStmt;
+
     static {
         try {
             getClientByLoginStmt = con.prepareStatement(REQUEST_BY_LOGIN);
@@ -41,6 +43,7 @@ public class ClientDAO extends BookStoreAccess {
     }
 
     private static PreparedStatement insertClientStmt;
+
     static {
         try {
             insertClientStmt = con.prepareStatement(REQUEST_INSERT_CLIENT);
@@ -50,6 +53,7 @@ public class ClientDAO extends BookStoreAccess {
     }
 
     private static PreparedStatement changePassword;
+
     static {
         try {
             changePassword = con.prepareStatement(CHANGE_PASSWORD_REQUEST);
@@ -166,14 +170,5 @@ public class ClientDAO extends BookStoreAccess {
         } catch (NullPointerException e1) {
             logger.error("Client cannot be null");
         }
-    }
-
-    public static void main(String[] args) {
-        ClientDAO cl = new ClientDAO();
-
-        Client me1 = cl.getClientByLogin("CptNipel");
-        cl.changeClientPassword(me1, "MrSandmanNew", "LooperKooper");
-        Client clo = new Client(123, "Master Postamn", "Paralells lines", "Compot");
-        cl.addNewClient(clo);
     }
 }

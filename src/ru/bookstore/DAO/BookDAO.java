@@ -6,6 +6,7 @@ package ru.bookstore.DAO;
 
 import java.sql.*;
 import java.util.*;
+
 import org.apache.log4j.Logger;
 
 import ru.bookstore.POJO.Book;
@@ -22,6 +23,7 @@ public class BookDAO extends BookStoreAccess {
     private static String REQUEST_INSERT_BOOK = "INSERT INTO BOOK (ID, NAME, AUTHOR, GENRE, PUBLISHING) VALUES(?,?,?,?,?)";
 
     private static PreparedStatement getBookByIdStmt;
+
     static {
         try {
             getBookByIdStmt = con.prepareStatement(REQUEST_BY_ID);
@@ -31,6 +33,7 @@ public class BookDAO extends BookStoreAccess {
     }
 
     private static PreparedStatement getBookByNameStmt;
+
     static {
         try {
             getBookByNameStmt = con.prepareStatement(REQUEST_BY_NAME);
@@ -40,6 +43,7 @@ public class BookDAO extends BookStoreAccess {
     }
 
     private static PreparedStatement getBookByAuthorStmt;
+
     static {
         try {
             getBookByAuthorStmt = con.prepareStatement(REQUEST_BY_AUTHOR);
@@ -49,6 +53,7 @@ public class BookDAO extends BookStoreAccess {
     }
 
     private static PreparedStatement insertBookStmt;
+
     static {
         try {
             insertBookStmt = con.prepareStatement(REQUEST_INSERT_BOOK);
@@ -139,17 +144,6 @@ public class BookDAO extends BookStoreAccess {
             }
         }
     }
-    public static void main(String[] args) {
-        BookDAO bk = new BookDAO();
-        for (Book temp : bk.getBooksByAuthor("Robert Heinlein")) {
-            System.out.println(temp.getName());
-        }
-        Book kop = new Book(213L, "People are CrazY", "John Lee Kooper", "Comedy","Democracy");
-        bk.addNewBook(kop);
-        Book book = bk.getBookById(12);
-        System.out.println(book.getName());
-    }
-
 }
 
 

@@ -12,6 +12,7 @@ public class Book {
         }
         return id;
     }
+
     private long id = 0;
     private String name = null;
     private String author = null;
@@ -29,7 +30,7 @@ public class Book {
         hash = hashCode();
     }
 
-    public Book(long id,String name, String author, String genre, String publishing) {
+    public Book(long id, String name, String author, String genre, String publishing) {
         setName(name);
         setAuthor(author);
         setGenre(genre);
@@ -94,6 +95,7 @@ public class Book {
     public void setGenre(String genre) {
         this.genre = genre;
     }
+
     public String getPublishing() {
         return publishing;
     }

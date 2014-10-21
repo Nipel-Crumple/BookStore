@@ -1,6 +1,7 @@
 package ru.bookstore.POJO;
 
 import org.apache.log4j.Logger;
+
 import java.util.UUID;
 
 /**
@@ -115,7 +116,6 @@ public class Client {
             this.login = newLogin;
             return true;
         } else {
-
             return false;
         }
     }

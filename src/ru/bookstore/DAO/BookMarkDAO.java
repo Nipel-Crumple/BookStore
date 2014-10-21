@@ -93,17 +93,19 @@ public class BookMarkDAO extends BookStoreAccess {
         return newBookMark;
     }
 
-    public BookMark getBookMarkByClientID(long client_id) {
+    public List<BookMark> getBookMarkByClientID(long client_id) {
+        List<BookMark> bookMarksList = new ArrayList<BookMark>();
         BookMark neededBookMark = null;
         try {
             getBookMarkByClientIDStmt.setLong(1, client_id);
             ResultSet results = getBookMarkByClientIDStmt.executeQuery();
             results.next();
             neededBookMark = getBookMarkById(results.getLong("ID"));
+            bookMarksList.add(neededBookMark);
         } catch (SQLException e) {
             logger.debug("There is no BookMarks of client with id: " + client_id);
         }
-        return neededBookMark;
+        return bookMarksList;
     }
 
     public List<BookMark> getBookMarkByBookID(long book_id) {
@@ -160,16 +162,4 @@ public class BookMarkDAO extends BookStoreAccess {
             logger.debug("Mark already exists with ID: " + newBookMark.getID());
         }
     }
-    /* public static void main(String[] args) {
-        BookMarkDAO bk = new BookMarkDAO();
-
-
-        ClientDAO cl = new ClientDAO();
-        for (BookMark temp : bk.getBookMarkByBookID(12L)) {
-            System.out.println(cl.getClientById(temp.getClient_id()).getName());
-        }
-    }*/
-
-
-
 }
