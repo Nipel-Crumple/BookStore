@@ -13,8 +13,6 @@ import ru.bookstore.POJO.Client;
 
 public class ClientDAO extends BookStoreAccess {
 
-    public Set<Client> clientsSet = new HashSet<Client>();
-
     private static final Logger logger = Logger.getLogger("ClientDAO");
 
     private static String REQUEST_BY_ID = "SELECT * from CLIENT where ID=?";
@@ -77,7 +75,6 @@ public class ClientDAO extends BookStoreAccess {
             login = resultSet.getString("LOGIN");
             password = resultSet.getString("PASSWORD");
             newClient = new Client(id, name, login, password);
-            clientsSet.add(newClient);
         } catch (SQLException e) {
             logger.error("Cannot get client by ID: ", e);
         }
