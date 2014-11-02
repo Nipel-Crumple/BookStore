@@ -27,7 +27,7 @@ public class ConsoleView {
     }
 
     public String readLogin() {
-        String regex = "\\w{3,20}";
+        String regex = "[\\w\\-_]+";
         String s = sc.nextLine();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(s);

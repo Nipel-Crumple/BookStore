@@ -168,4 +168,11 @@ public class ClientDAO extends BookStoreAccess {
             logger.error("Client cannot be null");
         }
     }
+
+    public static void main(String[] args) {
+        ClientDAO cl = new ClientDAO();
+        Client client = cl.getClientByLogin("CptNipel");
+        cl.changeClientPassword(client, "LooperKooper", "Poper");
+        System.out.println(client.getPassword());
+    }
 }
