@@ -90,7 +90,7 @@ public class HistoryDAO extends BookStoreAccess {
             buyDate = resultSet.getDate("BUY_DATE");
             newHistory = new History(clientID, bookID, buyDate);
         } catch (SQLException e) {
-            logger.error("There is no history with id: " + id);
+            logger.info("There is no history with id: " + id);
         }
         return newHistory;
     }

@@ -13,14 +13,25 @@ import ru.bookstore.POJO.Book;
 
 public class BookDAO extends BookStoreAccess {
 
-    public Set<Book> bookSet = new HashSet<Book>();
+    public List<Book> wholeBookList = new ArrayList<Book>();
 
     private static final Logger logger = Logger.getLogger("BookDAO");
 
-    private static String REQUEST_BY_ID = "SELECT * from BOOK where ID = ?";
+    private static String REQUEST_BY_ID = "SELECT * FROM BOOK WHERE ID = ?";
+    private static String REQUEST_ALL_BOOKS = "SELECT * FROM BOOK";
     private static String REQUEST_BY_NAME = "SELECT * FROM BOOK WHERE NAME = ?";
     private static String REQUEST_BY_AUTHOR = "SELECT * FROM BOOK WHERE AUTHOR = ?";
     private static String REQUEST_INSERT_BOOK = "INSERT INTO BOOK (ID, NAME, AUTHOR, GENRE, PUBLISHING) VALUES(?,?,?,?,?)";
+
+    private static PreparedStatement getAllBooks;
+
+    static {
+        try {
+            getAllBooks = con.prepareStatement(REQUEST_ALL_BOOKS);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in initialising of getting Book by ID", e);
+        }
+    }
 
     private static PreparedStatement getBookByIdStmt;
 
@@ -63,6 +74,34 @@ public class BookDAO extends BookStoreAccess {
     }
 
 
+    public List<Book> getAllBooks() {
+        Book newBook = null;
+        long id;
+        String name;
+        String author;
+        String genre;
+        String publishing;
+
+        ResultSet resultSet;
+        try {
+            resultSet = getAllBooks.executeQuery();
+            while(resultSet.next()) {
+                id = resultSet.getLong("ID");
+                name = resultSet.getString("NAME");
+                author = resultSet.getString("AUTHOR");
+                genre = resultSet.getString("GENRE");
+                publishing = resultSet.getString("PUBLISHING");
+                newBook = new Book(id, name, author, genre, publishing);
+                if (!wholeBookList.contains(newBook)) {
+                    wholeBookList.add(newBook);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("mistake in getting all books");
+        }
+        return wholeBookList;
+    }
+
     public Book getBookById(long id) {
         Book newBook = null;
         String name;
@@ -80,7 +119,6 @@ public class BookDAO extends BookStoreAccess {
             genre = resultSet.getString("GENRE");
             publishing = resultSet.getString("PUBLISHING");
             newBook = new Book(id, name, author, genre, publishing);
-            bookSet.add(newBook);
         } catch (SQLException e) {
             logger.error("There is no book with id: " + id);
         }

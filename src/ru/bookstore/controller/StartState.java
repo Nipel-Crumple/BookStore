@@ -1,26 +1,36 @@
 package ru.bookstore.controller;
 
 import org.apache.commons.cli.CommandLine;
+import ru.bookstore.User.UserHelper;
+import ru.bookstore.view.ConsoleView;
 
 /**
  * Created by Johnny D on 02.11.2014.
  */
 public class StartState implements State {
 
+    private CommandLine cl = null;
+    private UserHelper usrHelper = null;
+    private ConsoleView consoleView;
+
     private StartState() {
     }
 
-    public static StartState getInstance(){
+    public static StartState getInstance() {
         return new StartState();
     }
 
-   @Override
-   public String toString() {
-       return "Starting state";
-   }
     @Override
-    public void analyseCommands(Controller controller, CommandLine cl) {
+    public String toString() {
+        return "Starting state";
+    }
+
+    @Override
+    public void analyseCommands(Controller controller) {
         controller.setState(this);
+        cl = controller.getCommandLine();
+        consoleView = controller.getConsoleView();
+        usrHelper = controller.getUsrHelper();
         if (cl.hasOption("help")) {
             controller.formatter.printHelp("BookStore", controller.getOptions());
             controller.setState(this);
@@ -28,14 +38,15 @@ public class StartState implements State {
         }
 
         if (cl.hasOption("state")) {
-            controller.getConsoleView().println(toString());
+            consoleView.println(toString());
             return;
         }
 
         if (cl.hasOption("set")) {
-            if (cl.getOptionValue("set").equalsIgnoreCase("user") && controller.createUserSession()) {
+            if (cl.getOptionValue("set").equalsIgnoreCase("user") && usrHelper.createUserSession()) {
                 controller.setState(RunningState.getInstance());
                 return;
+//
             } else {
                 controller.setState(this);
                 return;
@@ -44,6 +55,11 @@ public class StartState implements State {
 
         if (cl.hasOption("close")) {
             System.exit(0);
+        }
+
+        if (true) {
+            consoleView.println("Invalid command, try again");
+            return;
         }
     }
 }

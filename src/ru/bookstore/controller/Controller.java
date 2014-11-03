@@ -2,44 +2,67 @@ package ru.bookstore.controller;
 
 import org.apache.commons.cli.*;
 import ru.bookstore.DAO.ClientDAO;
+import ru.bookstore.POJO.BookMark;
 import ru.bookstore.POJO.Client;
+import ru.bookstore.POJO.History;
+import ru.bookstore.User.UserHelper;
 import ru.bookstore.view.ConsoleView;
 
 import org.apache.log4j.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Johnny D on 28.10.2014.
  */
+
 public class Controller {
     private Logger logger = Logger.getLogger("Controller.java");
-
 
     private ConsoleView consoleView = null;
     private Options options = new Options();
     private CommandLineParser parser = new BasicParser();
-    private Client currentClient;
     private CommandLine cl = null;
-    private ClientDAO clientAccessDB = new ClientDAO();
-    private State state = StartState.getInstance();
     HelpFormatter formatter = new HelpFormatter();
+
+    private UserHelper usrHelper = null;
+
+    private State state = StartState.getInstance();
 
 
     public Controller() {
         this.consoleView = new ConsoleView(System.in, System.out);
+        usrHelper = new UserHelper(this.consoleView);
         options.addOption("exit", false, "Leaving User's session");
         options.addOption("set", true, "set session");
         options.addOption("change", true, "Changing <arg = password> or <arg = username>");
         options.addOption("close", false, "Stop running an application");
         options.addOption("help", false, "Possible commands");
         options.addOption("state", false, "Current state");
+        options.addOption("get", true, "get some info about <arg>");
+        options.addOption("put", false, "put to cart");
+        options.addOption("show", true, "show your cart");
+        options.addOption("remove", false, "remove book from your cart");
+        options.addOption("clear", false, "clear all your cart");
+        options.addOption("buy", false, "buy all books in your cart");
+        options.addOption("add", true, "adding something new");
 
         formatter.printHelp("BookStore", options);
+    }
+
+
+    public UserHelper getUsrHelper() {
+        return usrHelper;
+    }
+
+    public CommandLine getCommandLine() {
+        return this.cl;
     }
 
     public ConsoleView getConsoleView() {
         return consoleView;
     }
-
 
     public Options getOptions() {
         return options;
@@ -53,61 +76,14 @@ public class Controller {
         return state;
     }
 
-    public boolean checkUserValidity(String login, String password) {
-
-        currentClient = clientAccessDB.getClientByLogin(login);
-        if (currentClient != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void changePassword(String oldPassword) {
-        consoleView.print("Enter new password: ");
-        String newPassword = consoleView.readPassword();
-        clientAccessDB.changeClientPassword(currentClient, oldPassword, newPassword);
-    }
-
-    public void changeLogin(String oldPassword) {
-        consoleView.print("Enter new login: ");
-        String newLogin = consoleView.readLogin();
-        clientAccessDB.changeLogin(currentClient, newLogin, oldPassword);
-    }
-
-    public boolean createUserSession() {
-        String login;
-        String password;
-        consoleView.print("Login: ");
-        login = consoleView.readLogin();
-        consoleView.print("Password: ");
-        password = consoleView.readPassword();
-        if (checkUserValidity(login, password)) {
-            consoleView.println("Success!");
-            return true;
-        } else {
-            consoleView.println("Invalid username or password");
-            return false;
-        }
-    }
-
-    public void exitUserSession() {
-        clientAccessDB = null;
-        currentClient = null;
-    }
-
-    public Client getCurrentClient() {
-        return currentClient;
-    }
-
     public void parseCommand() {
         try {
             System.out.print("BookStore: ");
             cl = parser.parse(this.options, consoleView.readLine());
-            state.analyseCommands(this, this.cl);
-
+            state.analyseCommands(this);
         } catch (ParseException e) {
-            logger.error("Bad Command parser");
+            consoleView.println("Invalid command, try again");
+            logger.info("Bad Command parser");
         }
     }
 

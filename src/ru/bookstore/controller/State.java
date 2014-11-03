@@ -7,5 +7,5 @@ import org.apache.commons.cli.CommandLine;
  */
 public interface State {
 
-    public void analyseCommands(Controller controller, CommandLine cmdl);
+    public void analyseCommands(Controller controller);
 }

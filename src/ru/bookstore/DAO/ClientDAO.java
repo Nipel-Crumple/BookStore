@@ -90,10 +90,10 @@ public class ClientDAO extends BookStoreAccess {
             if (results.next()) {
                 neededClient = getClientById(results.getLong("ID"));
             } else {
-                logger.error("There is no client with login: " + login);
+                logger.info("There is no client with login: " + login);
             }
         } catch (SQLException e) {
-            logger.error("Incorrect request. Check your input data. ", e);
+            logger.info("Incorrect request. Check your input data. ", e);
         }
         return neededClient;
     }
@@ -107,7 +107,7 @@ public class ClientDAO extends BookStoreAccess {
         try {
 
             if (neededClient != null) {
-                logger.error("This login's Client already exists");
+                logger.info("This login's Client already exists");
                 return neededClient;
             } else {
                 try {
@@ -142,7 +142,7 @@ public class ClientDAO extends BookStoreAccess {
                     logger.debug("SQL EXCEPT in changing password\n", e);
                 }
             } else {
-                logger.error("Password has not changed. Password incorrect. Invalid access. Try again.");
+                logger.info("Password has not changed. Password incorrect. Invalid access. Try again.");
             }
         } catch (NullPointerException e) {
             logger.error("Client cannot be null");
@@ -162,17 +162,10 @@ public class ClientDAO extends BookStoreAccess {
                     logger.debug("SQL EXCEPT in changing login\n", e);
                 }
             } else {
-                logger.error("Login has not changed. Password incorrect. Invalid access. Try again.");
+                logger.info("Login has not changed. Password incorrect. Invalid access. Try again.");
             }
         } catch (NullPointerException e1) {
             logger.error("Client cannot be null");
         }
-    }
-
-    public static void main(String[] args) {
-        ClientDAO cl = new ClientDAO();
-        Client client = cl.getClientByLogin("CptNipel");
-        cl.changeClientPassword(client, "LooperKooper", "Poper");
-        System.out.println(client.getPassword());
     }
 }

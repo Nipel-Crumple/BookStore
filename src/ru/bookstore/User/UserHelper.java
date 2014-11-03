@@ -1,20 +1,129 @@
 package ru.bookstore.User;
 
+import ru.bookstore.DAO.*;
 import ru.bookstore.DAO.ClientDAO;
+import ru.bookstore.DAO.HistoryDAO;
+import ru.bookstore.POJO.*;
+import ru.bookstore.view.ConsoleView;
+
+import java.util.*;
+import java.sql.Date;
 
 /**
  * Created by Johnny D on 28.10.2014.
  */
 public class UserHelper {
-    private String login;
-    private String password;
-    private UserHelper(String login, String password) {
-        this.login = login;
-        this.password = password;
+    private ConsoleView consoleView;
+    private List<Book> currentClientBooks = new ArrayList<Book>();
+    private Client currentClient;
+
+    private UserCart usrCart = new UserCart();
+
+    private ClientDAO clientAccessDB = new ClientDAO();
+    private HistoryDAO clientHistoryDB = new HistoryDAO();
+    private BookDAO clientBookDB = new BookDAO();
+
+    public UserHelper(ConsoleView consoleView) {
+        this.consoleView = consoleView;
     }
 
-    public static UserHelper getInstance(String login, String password) {
-        return new UserHelper(login, password);
+    public boolean checkUserValidity(String login, String password) {
+        currentClient = clientAccessDB.getClientByLogin(login);
+        if (currentClient != null) {
+            if (currentClient.getPassword().equals(password)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public void addToCart(String name) {
+        Book book = clientBookDB.getBookByName(name);
+        usrCart.addToCart(book);
+        consoleView.println("added");
+    }
+
+    public void removeFromCart(String name) {
+        Book book = clientBookDB.getBookByName(name);
+        if (book == null) {
+            consoleView.println("There is no such book in cart");
+        } else {
+            usrCart.removeFromCart(book);
+            consoleView.println("removed");
+        }
+    }
+
+    public UserCart getUsrCart() {
+        return usrCart;
+    }
+
+    public void buyBooks() {
+        for(Book temp : usrCart.getNeededBooks()) {
+            Calendar calendar = Calendar.getInstance();
+            Date date = new Date(calendar.getTimeInMillis());
+            History newHistory = new History(currentClient.getID(), temp.getID(), date);
+            clientHistoryDB.addNewHistoryNote(newHistory);
+        }
+    }
+
+    public void changePassword(String oldPassword) {
+        consoleView.print("Enter new password: ");
+        String newPassword = consoleView.readPassword();
+        clientAccessDB.changeClientPassword(currentClient, oldPassword, newPassword);
+    }
+
+    public void changeLogin(String oldPassword) {
+        consoleView.print("Enter new login: ");
+        String newLogin = consoleView.readLogin();
+        clientAccessDB.changeLogin(currentClient, newLogin, oldPassword);
+    }
+
+    public boolean createUserSession() {
+        String login;
+        String password;
+        consoleView.print("Login: ");
+        login = consoleView.readLogin();
+        consoleView.print("Password: ");
+        password = consoleView.readPassword();
+        if (checkUserValidity(login, password)) {
+            consoleView.println("Success!");
+            return true;
+        } else {
+            consoleView.println("Invalid username or password");
+            return false;
+        }
+    }
+
+    public void exitUserSession() {
+        usrCart.clearCart();
+        currentClient = null;
+        currentClientBooks.clear();
+    }
+
+    public List<Book> getClientBooks() {
+        List<History> currentClientHistory = clientHistoryDB.getHistoryByClientID(currentClient.getID());
+
+        for (History temp : currentClientHistory) {
+            Book book = clientBookDB.getBookById(temp.getBook_id());
+            if (!currentClientBooks.contains(book)) {
+                currentClientBooks.add(book);
+            }
+        }
+
+        return currentClientBooks;
+    }
+
+    public List<Book> getAllBooks() {
+        return clientBookDB.getAllBooks();
+    }
+
+
+
+    public Client getCurrentClient() {
+        return currentClient;
     }
 
 }

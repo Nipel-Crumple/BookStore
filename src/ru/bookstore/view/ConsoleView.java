@@ -1,8 +1,13 @@
 package ru.bookstore.view;
 
 import java.io.*;
+import java.util.Formatter;
+import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import org.apache.log4j.Logger;
+import ru.bookstore.POJO.Book;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +29,10 @@ public class ConsoleView {
         String s = sc.nextLine();
         String[] splitted =  s.split("\\s+");
         return splitted;
+    }
+
+    public String readWholeLine() {
+        return sc.nextLine();
     }
 
     public String readLogin() {
@@ -53,6 +62,17 @@ public class ConsoleView {
         }
     }
 
+    public void printListBooks(List<Book> list) {
+        printf("%-25s", "Name");
+        printf("%-25s", "Author");
+        println();
+        for (Book temp : list) {
+            printf("%-25s", temp.getName());
+            printf("%-25s", temp.getAuthor());
+            println();
+        }
+    }
+
     public void println(String s) {
         ps.println(s);
     }
@@ -60,12 +80,13 @@ public class ConsoleView {
     public void println() {
         ps.println();
     }
+
+    public void printf(String format, String s) {
+        ps.printf(format, s);
+    }
+
     public void print(String s) {
         ps.print(s);
     }
-    /*public static void main(String[] args) {
-        ConsoleView cs = new ConsoleView(System.in, System.out);
-        String pass = cs.readPassword();
-        System.out.println(pass);
-    }*/
+
 }
