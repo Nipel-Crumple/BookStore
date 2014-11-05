@@ -65,9 +65,7 @@ public class RunningState implements State {
                 String author = consoleView.readWholeLine();
                 consoleView.print("Genre: ");
                 String genre = consoleView.readWholeLine();
-                consoleView.print("Publishing: ");
-                String publishing = consoleView.readWholeLine();
-                admin.addNewBook(name, author, genre, publishing);
+                admin.addNewBook(name, author, genre);
                 consoleView.println("Book was added!");
                 return;
             }
@@ -97,8 +95,8 @@ public class RunningState implements State {
                 consoleView.printMapBooks(map);
                 return;
             } else if (cl.getOptionValue("get").equalsIgnoreCase("allbooks")) {
-                List<Book> listBook = usrHelper.getAllBooks();
-                consoleView.printListBooks(listBook);
+                Map<Book, Integer> mapBook = usrHelper.getAllBooksWithMarks();
+                consoleView.printMapBooksWithMarks(mapBook);
                 return;
             } else {
                 consoleView.print("Something's going wrong in getting books");

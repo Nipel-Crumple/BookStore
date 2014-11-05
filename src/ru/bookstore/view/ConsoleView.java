@@ -26,7 +26,7 @@ public class ConsoleView {
 
     public String[] readLine() {
         String s = sc.nextLine();
-        String[] splitted =  s.split("\\s+");
+        String[] splitted = s.split("\\s+");
         return splitted;
     }
 
@@ -71,6 +71,7 @@ public class ConsoleView {
             println();
         }
     }
+
     public void printMapBooks(Map<Book, BookMark> map) {
         printf("%-25s", "Name");
         printf("%-25s", "Author");
@@ -88,6 +89,20 @@ public class ConsoleView {
         }
     }
 
+    public void printMapBooksWithMarks(Map<Book, Integer> map) {
+        printf("%-25s", "Name");
+        printf("%-25s", "Author");
+        printf("%-25s", "Mark");
+        println();
+        for (Map.Entry<Book, Integer> temp : map.entrySet()) {
+            printf("%-25s", temp.getKey().getName());
+            printf("%-25s", temp.getKey().getAuthor());
+            printf("%-25s", temp.getValue().toString());
+            println();
+        }
+
+    }
+
     public void println(String s) {
         ps.println(s);
     }
@@ -99,6 +114,7 @@ public class ConsoleView {
     public void printf(String format, String s) {
         ps.printf(format, s);
     }
+
     public void printf(String format, long s) {
         ps.printf(format, s);
     }

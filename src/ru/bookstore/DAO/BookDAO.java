@@ -21,7 +21,7 @@ public class BookDAO extends BookStoreAccess {
     private static String REQUEST_ALL_BOOKS = "SELECT * FROM BOOK";
     private static String REQUEST_BY_NAME = "SELECT * FROM BOOK WHERE NAME = ?";
     private static String REQUEST_BY_AUTHOR = "SELECT * FROM BOOK WHERE AUTHOR = ?";
-    private static String REQUEST_INSERT_BOOK = "INSERT INTO BOOK (ID, NAME, AUTHOR, GENRE, PUBLISHING) VALUES(?,?,?,?,?)";
+    private static String REQUEST_INSERT_BOOK = "INSERT INTO BOOK (ID, NAME, AUTHOR, GENRE) VALUES(?,?,?,?)";
     private static String REMOVE_BOOK = "DELETE FROM BOOK WHERE NAME = ?";
 
     private static PreparedStatement removeBook;
@@ -91,7 +91,6 @@ public class BookDAO extends BookStoreAccess {
         String name;
         String author;
         String genre;
-        String publishing;
 
         ResultSet resultSet;
         try {
@@ -101,14 +100,13 @@ public class BookDAO extends BookStoreAccess {
                 name = resultSet.getString("NAME");
                 author = resultSet.getString("AUTHOR");
                 genre = resultSet.getString("GENRE");
-                publishing = resultSet.getString("PUBLISHING");
-                newBook = new Book(id, name, author, genre, publishing);
+                newBook = new Book(id, name, author, genre);
                 if (!wholeBookList.contains(newBook)) {
                     wholeBookList.add(newBook);
                 }
             }
         } catch (SQLException e) {
-            logger.error("mistake in getting all books");
+            logger.error("mistake in getting all books", e);
         }
         return wholeBookList;
     }
@@ -118,7 +116,6 @@ public class BookDAO extends BookStoreAccess {
         String name;
         String author;
         String genre;
-        String publishing;
 
         ResultSet resultSet;
         try {
@@ -128,8 +125,7 @@ public class BookDAO extends BookStoreAccess {
             name = resultSet.getString("NAME");
             author = resultSet.getString("AUTHOR");
             genre = resultSet.getString("GENRE");
-            publishing = resultSet.getString("PUBLISHING");
-            newBook = new Book(id, name, author, genre, publishing);
+            newBook = new Book(id, name, author, genre);
         } catch (SQLException e) {
             logger.error("There is no book with id: " + id);
         }
@@ -186,7 +182,6 @@ public class BookDAO extends BookStoreAccess {
                 insertBookStmt.setString(2, newBook.getName());
                 insertBookStmt.setString(3, newBook.getAuthor());
                 insertBookStmt.setString(4, newBook.getGenre());
-                insertBookStmt.setString(5, newBook.getPublishing());
                 insertBookStmt.execute();
             } catch (SQLException e) {
                 logger.error("SQL request insert error", e);

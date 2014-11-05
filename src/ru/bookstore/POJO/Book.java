@@ -18,24 +18,21 @@ public class Book {
     private String author = null;
     private String genre = null;
 
-    private String publishing = null;
     private int hash = 0;
 
-    public Book(String name, String author, String genre, String publishing) {
+    public Book(String name, String author, String genre) {
         setName(name);
         setAuthor(author);
         setGenre(genre);
         setID();
-        setPublishing(publishing);
         hash = hashCode();
     }
 
-    public Book(long id, String name, String author, String genre, String publishing) {
+    public Book(long id, String name, String author, String genre) {
         setName(name);
         setAuthor(author);
         setGenre(genre);
         hash = hashCode();
-        setPublishing(publishing);
         setID(id);
     }
 
@@ -94,14 +91,6 @@ public class Book {
 
     public void setGenre(String genre) {
         this.genre = genre;
-    }
-
-    public String getPublishing() {
-        return publishing;
-    }
-
-    public void setPublishing(String publishing) {
-        this.publishing = publishing;
     }
 
 }

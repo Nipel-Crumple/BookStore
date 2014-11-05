@@ -125,6 +125,32 @@ public class UserHelper {
         return clientBookDB.getAllBooks();
     }
 
+    public Map<Book, Integer> getAllBooksWithMarks() {
+        List<Book> listBook = clientBookDB.getAllBooks();
+        Map<Book, Integer> map = new TreeMap<Book, Integer>(new Comparator<Book>() {
+            @Override
+            public int compare(Book o1, Book o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        for(Book temp : listBook) {
+            int summ = 0;
+            int iter = 0;
+            for (BookMark tempBookMark : clientBookMarkDAO.getBookMarkByBookID(temp.getID())) {
+                summ += tempBookMark.getMark();
+                iter++;
+            }
+            if (iter != 0){
+                Integer average = summ / iter;
+                map.put(temp, average);
+            } else {
+                map.put(temp, 0);
+            }
+        }
+        return map;
+    }
+
     public Client getCurrentClient() {
         return currentClient;
     }

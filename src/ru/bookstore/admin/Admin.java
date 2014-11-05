@@ -61,8 +61,8 @@ public class Admin {
         currentAdmin = null;
     }
 
-    public void addNewBook(String name, String author, String genre, String publishing) {
-        Book newBook = new Book(name, author, genre, publishing);
+    public void addNewBook(String name, String author, String genre) {
+        Book newBook = new Book(name, author, genre);
         clientBookDB.addNewBook(newBook);
     }
 
