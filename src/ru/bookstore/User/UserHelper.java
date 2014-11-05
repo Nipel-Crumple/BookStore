@@ -14,7 +14,13 @@ import java.sql.Date;
  */
 public class UserHelper {
     private ConsoleView consoleView;
-    private List<Book> currentClientBooks = new ArrayList<Book>();
+    Map<Book, BookMark> mapBooksAndMarks = new TreeMap<Book, BookMark>(new Comparator<Book>() {
+        @Override
+        public int compare(Book o1, Book o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    });
+
     private Client currentClient;
 
     private UserCart usrCart = new UserCart();
@@ -22,6 +28,7 @@ public class UserHelper {
     private ClientDAO clientAccessDB = new ClientDAO();
     private HistoryDAO clientHistoryDB = new HistoryDAO();
     private BookDAO clientBookDB = new BookDAO();
+    private BookMarkDAO clientBookMarkDAO = new BookMarkDAO();
 
     public UserHelper(ConsoleView consoleView) {
         this.consoleView = consoleView;
@@ -100,27 +107,23 @@ public class UserHelper {
     public void exitUserSession() {
         usrCart.clearCart();
         currentClient = null;
-        currentClientBooks.clear();
+        mapBooksAndMarks.clear();
     }
 
-    public List<Book> getClientBooks() {
+    public Map<Book, BookMark> getClientBooks() {
         List<History> currentClientHistory = clientHistoryDB.getHistoryByClientID(currentClient.getID());
 
         for (History temp : currentClientHistory) {
             Book book = clientBookDB.getBookById(temp.getBook_id());
-            if (!currentClientBooks.contains(book)) {
-                currentClientBooks.add(book);
-            }
+            BookMark bookMark = clientBookMarkDAO.getBookMarkbyClientAndBookID(currentClient.getID(), temp.getBook_id());
+            mapBooksAndMarks.put(book, bookMark);
         }
-
-        return currentClientBooks;
+        return mapBooksAndMarks;
     }
 
     public List<Book> getAllBooks() {
         return clientBookDB.getAllBooks();
     }
-
-
 
     public Client getCurrentClient() {
         return currentClient;

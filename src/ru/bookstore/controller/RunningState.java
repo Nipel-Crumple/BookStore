@@ -2,10 +2,13 @@ package ru.bookstore.controller;
 
 import org.apache.commons.cli.CommandLine;
 import ru.bookstore.POJO.Book;
+import ru.bookstore.POJO.BookMark;
 import ru.bookstore.User.*;
+import ru.bookstore.admin.Admin;
 import ru.bookstore.view.ConsoleView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Johnny D on 02.11.2014.
@@ -16,6 +19,7 @@ public class RunningState implements State {
     UserHelper usrHelper = null;
     UserCart usrCart = null;
     ConsoleView consoleView = null;
+    Admin admin = null;
 
     private RunningState() {
     }
@@ -41,10 +45,56 @@ public class RunningState implements State {
             return;
         }
 
+        if (cl.hasOption("add")) {
+            admin = Admin.getInstance(consoleView);
+            if (cl.getOptionValue("add").equalsIgnoreCase("client")) {
+                consoleView.print("Name: ");
+                String name = consoleView.readWholeLine();
+                consoleView.print("Login: ");
+                String login = consoleView.readLogin();
+                consoleView.print("Password: ");
+                String password = consoleView.readPassword();
+                admin.addNewClient(name, login, password);
+                consoleView.println("Client was added");
+                return;
+            }
+            if (cl.getOptionValue("add").equalsIgnoreCase("book")) {
+                consoleView.print("Name: ");
+                String name = consoleView.readWholeLine();
+                consoleView.print("Author: ");
+                String author = consoleView.readWholeLine();
+                consoleView.print("Genre: ");
+                String genre = consoleView.readWholeLine();
+                consoleView.print("Publishing: ");
+                String publishing = consoleView.readWholeLine();
+                admin.addNewBook(name, author, genre, publishing);
+                consoleView.println("Book was added!");
+                return;
+            }
+        }
+
+        if (cl.hasOption("remove")) {
+            admin = Admin.getInstance(consoleView);
+            if (cl.getOptionValue("remove").equalsIgnoreCase("client")) {
+                consoleView.print("Login: ");
+                String login = consoleView.readLogin();
+                admin.removeClient(login);
+                consoleView.println("Client was removed");
+                return;
+            }
+            if (cl.getOptionValue("remove").equalsIgnoreCase("book")) {
+                consoleView.print("Name: ");
+                String name = consoleView.readWholeLine();
+                admin.removeBook(name);
+                consoleView.println("Book was removed!");
+                return;
+            }
+        }
+
         if (cl.hasOption("get")) {
             if (cl.getOptionValue("get").equalsIgnoreCase("mybooks")) {
-                List<Book> listBook = usrHelper.getClientBooks();
-                consoleView.printListBooks(listBook);
+                Map<Book, BookMark> map = usrHelper.getClientBooks();
+                consoleView.printMapBooks(map);
                 return;
             } else if (cl.getOptionValue("get").equalsIgnoreCase("allbooks")) {
                 List<Book> listBook = usrHelper.getAllBooks();
@@ -102,6 +152,7 @@ public class RunningState implements State {
 
         if (cl.hasOption("exit")) {
             controller.getUsrHelper().exitUserSession();
+            admin.exitUserSession();
             controller.setState(StartState.getInstance());
             return;
         }

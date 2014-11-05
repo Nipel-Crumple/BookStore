@@ -2,7 +2,6 @@ package ru.bookstore.DAO;
 
 import org.apache.log4j.Logger;
 import ru.bookstore.POJO.BookMark;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -125,6 +124,16 @@ public class BookMarkDAO extends BookStoreAccess {
             logger.debug("There is no bookMark with book_id: " + book_id);
         }
         return listBookMark;
+    }
+
+    public BookMark getBookMarkbyClientAndBookID(long clientID, long bookID) {
+        List<BookMark> list_book = getBookMarkByBookID(bookID);
+        for (BookMark temp: list_book) {
+            if (temp.getClient_id() == clientID) {
+                return temp;
+            }
+        }
+        return null;
     }
 
     public List<BookMark> getBookMarkByMark(int mark) {

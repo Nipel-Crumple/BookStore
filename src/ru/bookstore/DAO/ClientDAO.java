@@ -19,6 +19,7 @@ public class ClientDAO extends BookStoreAccess {
     private static String REQUEST_BY_LOGIN = "SELECT * FROM CLIENT WHERE LOGIN =?";
     private static String REQUEST_INSERT_CLIENT = "INSERT INTO CLIENT (ID, NAME, LOGIN, PASSWORD) VALUES(?,?,?,?)";
     private static String CHANGE_PASSWORD_REQUEST = "UPDATE CLIENT SET PASSWORD = ? WHERE ID= ?";
+    private static String REMOVE_CLIENT_REQUEST = "DELETE FROM CLIENT WHERE LOGIN= ?";
 
     private static PreparedStatement getClientByIdStmt;
 
@@ -55,6 +56,16 @@ public class ClientDAO extends BookStoreAccess {
     static {
         try {
             changePassword = con.prepareStatement(CHANGE_PASSWORD_REQUEST);
+        } catch (SQLException e) {
+            logger.error("SQL exception in intialising of change passwor request", e);
+        }
+    }
+
+    private static PreparedStatement removeClient;
+
+    static {
+        try {
+            removeClient = con.prepareStatement(REMOVE_CLIENT_REQUEST);
         } catch (SQLException e) {
             logger.error("SQL exception in intialising of change passwor request", e);
         }
@@ -166,6 +177,39 @@ public class ClientDAO extends BookStoreAccess {
             }
         } catch (NullPointerException e1) {
             logger.error("Client cannot be null");
+        }
+    }
+
+    public boolean removeClient(String login) {
+        Client neededClient = getClientByLogin(login);
+
+        try {
+
+            if (neededClient == null) {
+                logger.info("This login does not exists");
+                return true;
+            } else {
+                try {
+                    removeClient.setString(1, login);
+                    removeClient.execute();
+                    logger.info("Client has been added");
+                    return true;
+                } catch (SQLException e) {
+                    logger.error("SQL request insert error: ", e);
+                }
+            }
+        } catch (NullPointerException e1) {
+            logger.error("Null pointer client: ", e1);
+        }
+
+        return false;
+
+    }
+
+    public static void main(String[] args) {
+        ClientDAO cl = new ClientDAO();
+        if (cl.removeClient("Twister")) {
+            System.out.println("Deleted");
         }
     }
 }

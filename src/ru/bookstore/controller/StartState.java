@@ -2,6 +2,7 @@ package ru.bookstore.controller;
 
 import org.apache.commons.cli.CommandLine;
 import ru.bookstore.User.UserHelper;
+import ru.bookstore.admin.Admin;
 import ru.bookstore.view.ConsoleView;
 
 /**
@@ -12,6 +13,7 @@ public class StartState implements State {
     private CommandLine cl = null;
     private UserHelper usrHelper = null;
     private ConsoleView consoleView;
+    private Admin admin = null;
 
     private StartState() {
     }
@@ -46,7 +48,12 @@ public class StartState implements State {
             if (cl.getOptionValue("set").equalsIgnoreCase("user") && usrHelper.createUserSession()) {
                 controller.setState(RunningState.getInstance());
                 return;
-//
+            } else if (cl.getOptionValue("set").equalsIgnoreCase("admin")) {
+                admin = Admin.getInstance(consoleView);
+                if (admin.createAdminSession()) {
+                    controller.setState(RunningState.getInstance());
+                    return;
+                }
             } else {
                 controller.setState(this);
                 return;

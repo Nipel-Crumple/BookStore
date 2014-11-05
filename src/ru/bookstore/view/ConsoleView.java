@@ -1,12 +1,11 @@
 package ru.bookstore.view;
 
 import java.io.*;
-import java.util.Formatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
+
 import org.apache.log4j.Logger;
 import ru.bookstore.POJO.Book;
+import ru.bookstore.POJO.BookMark;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,6 +71,22 @@ public class ConsoleView {
             println();
         }
     }
+    public void printMapBooks(Map<Book, BookMark> map) {
+        printf("%-25s", "Name");
+        printf("%-25s", "Author");
+        printf("%-25s", "Mark");
+        println();
+        for (Map.Entry<Book, BookMark> temp : map.entrySet()) {
+            printf("%-25s", temp.getKey().getName());
+            printf("%-25s", temp.getKey().getAuthor());
+            if (temp.getValue() == null) {
+                printf("%-25s", "none");
+            } else {
+                printf("%-25d", temp.getValue().getMark());
+            }
+            println();
+        }
+    }
 
     public void println(String s) {
         ps.println(s);
@@ -82,6 +97,9 @@ public class ConsoleView {
     }
 
     public void printf(String format, String s) {
+        ps.printf(format, s);
+    }
+    public void printf(String format, long s) {
         ps.printf(format, s);
     }
 
