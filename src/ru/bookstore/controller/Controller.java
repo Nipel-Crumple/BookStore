@@ -47,6 +47,8 @@ public class Controller {
         options.addOption("clear", false, "clear all your cart");
         options.addOption("buy", false, "buy all books in your cart");
         options.addOption("add", true, "adding something new");
+        options.addOption("delete", true, "delete <arg = book> or <arg = client>");
+        options.addOption("rate", false, "rate some book");
 
         formatter.printHelp("BookStore", options);
     }

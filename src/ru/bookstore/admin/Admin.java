@@ -1,7 +1,9 @@
 package ru.bookstore.admin;
 
 import ru.bookstore.DAO.BookDAO;
+import ru.bookstore.DAO.BookMarkDAO;
 import ru.bookstore.DAO.ClientDAO;
+import ru.bookstore.DAO.HistoryDAO;
 import ru.bookstore.POJO.Book;
 import ru.bookstore.POJO.Client;
 import ru.bookstore.view.ConsoleView;
@@ -16,6 +18,8 @@ public class Admin {
 
     protected ClientDAO clientAccessDB = new ClientDAO();
     protected BookDAO clientBookDB = new BookDAO();
+    protected BookMarkDAO clientBookMarkDB = new BookMarkDAO();
+    protected HistoryDAO clientHistoryDB = new HistoryDAO();
 
     private Admin(ConsoleView consoleView) {
         this.consoleView = consoleView;
@@ -71,11 +75,17 @@ public class Admin {
         clientAccessDB.addNewClient(newClient);
     }
 
-    public void removeClient(String login) {
-        clientAccessDB.removeClient(login);
+    public void deleteClient(String login) {
+        long userID = clientAccessDB.getClientByLogin(login).getID();
+        clientHistoryDB.deleteByUserID(userID);
+        clientBookMarkDB.deleteByUserID(userID);
+        clientAccessDB.removeClient(userID);
     }
 
-    public void removeBook(String name) {
-        clientBookDB.removeBook(name);
+    public void deleteBook(String name) {
+        long bookID = clientBookDB.getBookByName(name).getID();
+        clientHistoryDB.deleteByBookID(bookID);
+        clientBookMarkDB.deleteByBookID(bookID);
+        clientBookDB.removeBook(bookID);
     }
 }

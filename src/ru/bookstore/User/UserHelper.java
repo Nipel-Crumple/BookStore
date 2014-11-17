@@ -151,6 +151,18 @@ public class UserHelper {
         return map;
     }
 
+    public void rateBook(String bookName, int mark) {
+        long bookID = clientBookDB.getBookByName(bookName).getID();
+        long clientID = currentClient.getID();
+        if (clientBookMarkDAO.getBookMarkbyClientAndBookID(clientID, bookID) == null) {
+            BookMark bm = new BookMark(clientID, bookID, mark);
+            clientBookMarkDAO.addNewMark(bm);
+        } else {
+            consoleView.println("The mark is already exist!");
+        }
+    }
+
+
     public Client getCurrentClient() {
         return currentClient;
     }

@@ -22,6 +22,8 @@ public class HistoryDAO extends BookStoreAccess {
     private static String REQUEST_BY_BOOK_ID = "SELECT * FROM HISTORY WHERE BOOK_ID = ?";
     private static String REQUEST_BY_DATE = "SELECT * FROM HISTORY  WHERE BUY_DATE = ?";
     private static String REQUEST_INSERT = "INSERT INTO HISTORY (ID, BOOK_ID, CLIENT_ID, BUY_DATE) VALUES(?,?,?,?)";
+    private static String DELETE_BY_USER_ID = "DELETE FROM HISTORY WHERE CLIENT_ID=?";
+    private static String DELETE_BY_BOOK_ID = "DELETE FROM HISTORY WHERE BOOK_ID=?";
 
     private static PreparedStatement getHistoryByIDStmt;
 
@@ -70,6 +72,26 @@ public class HistoryDAO extends BookStoreAccess {
             insertHistory = con.prepareStatement(REQUEST_INSERT);
         } catch (SQLException e) {
             logger.error("SQL Exception in initialising of get History by mark", e);
+        }
+    }
+
+    private static PreparedStatement deleteByBookID;
+
+    static {
+        try {
+            deleteByBookID = con.prepareStatement(DELETE_BY_BOOK_ID);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in init of deleting bookmark by bookID", e);
+        }
+    }
+
+    private static PreparedStatement deleteByUserID;
+
+    static {
+        try {
+            deleteByUserID = con.prepareStatement(DELETE_BY_USER_ID);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in init of deleting bookmark by userID", e);
         }
     }
 
@@ -159,4 +181,27 @@ public class HistoryDAO extends BookStoreAccess {
             logger.debug("Mark already exists with ID: " + newHistory.getID());
         }
     }
+
+    public void deleteByUserID(long userID) {
+        try {
+            deleteByUserID.setLong(1, userID);
+            deleteByUserID.execute();
+        } catch (SQLException e) {
+            logger.error("SQL arror in deleting deleteByUserID() method in HistoryDAO", e);
+        }
+    }
+
+    public void deleteByBookID(long bookID) {
+        try {
+            deleteByBookID.setLong(1, bookID);
+            deleteByBookID.execute();
+        } catch (SQLException e) {
+            logger.error("SQL arror in deleting deleteByBookID() method in HistoryDAO", e);
+        }
+    }
+
+//    public static void main(String[] args) {
+//        HistoryDAO h = new HistoryDAO();
+//        h.deleteByUserID(123L);
+//    }
 }

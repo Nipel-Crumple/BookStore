@@ -2,10 +2,12 @@ package ru.bookstore.DAO;
 
 import org.apache.log4j.Logger;
 import ru.bookstore.POJO.BookMark;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Johnny D on 15.10.2014.
@@ -19,6 +21,8 @@ public class BookMarkDAO extends BookStoreAccess {
     private static String REQUEST_BY_BOOK_ID = "SELECT * FROM BOOK_MARK WHERE BOOK_ID = ?";
     private static String REQUEST_RATE = "SELECT * FROM BOOK_MARK WHERE MARK=?";
     private static String REQUEST_INSERT = "INSERT INTO BOOK_MARK (ID, CLIENT_ID, BOOK_ID, MARK) VALUES(?,?,?,?)";
+    private static String DELETE_BY_USER_ID = "DELETE FROM BOOK_MARK WHERE CLIENT_ID=?";
+    private static String DELETE_BY_BOOK_ID = "DELETE FROM BOOK_MARK WHERE BOOK_ID=?";
 
     private static PreparedStatement getBookMarkByIdStmt;
 
@@ -29,6 +33,7 @@ public class BookMarkDAO extends BookStoreAccess {
             logger.error("SQL Exception in initialising of getting BookMark by ID", e);
         }
     }
+
 
     private static PreparedStatement getBookMarkByClientIDStmt;
 
@@ -70,6 +75,25 @@ public class BookMarkDAO extends BookStoreAccess {
         }
     }
 
+    private static PreparedStatement deleteByUserID;
+
+    static {
+        try {
+            deleteByUserID = con.prepareStatement(DELETE_BY_USER_ID);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in init of deleting bookmark by userID", e);
+        }
+    }
+
+    private static PreparedStatement deleteByBookID;
+
+    static {
+        try {
+            deleteByBookID = con.prepareStatement(DELETE_BY_BOOK_ID);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in init of deleting bookmark by bookID", e);
+        }
+    }
 
     public BookMark getBookMarkById(long id) {
         BookMark newBookMark = null;
@@ -87,7 +111,7 @@ public class BookMarkDAO extends BookStoreAccess {
             mark = resultSet.getInt("MARK");
             newBookMark = new BookMark(clientID, bookID, mark);
         } catch (SQLException e) {
-            logger.error("There is no bookMark with id: " + id);
+            logger.debug("There is no bookMark with id: " + id, e);
         }
         return newBookMark;
     }
@@ -98,11 +122,12 @@ public class BookMarkDAO extends BookStoreAccess {
         try {
             getBookMarkByClientIDStmt.setLong(1, client_id);
             ResultSet results = getBookMarkByClientIDStmt.executeQuery();
-            results.next();
-            neededBookMark = getBookMarkById(results.getLong("ID"));
-            bookMarksList.add(neededBookMark);
+            while (results.next()) {
+                neededBookMark = getBookMarkById(results.getLong("ID"));
+                bookMarksList.add(neededBookMark);
+            }
         } catch (SQLException e) {
-            logger.debug("There is no BookMarks of client with id: " + client_id);
+            logger.debug("There is no BookMarks of client with id: " + client_id, e);
         }
         return bookMarksList;
     }
@@ -121,14 +146,14 @@ public class BookMarkDAO extends BookStoreAccess {
                 listBookMark.add(neededBook);
             }
         } catch (SQLException e) {
-            logger.debug("There is no bookMark with book_id: " + book_id);
+            logger.debug("There is no bookMark with book_id: " + book_id, e);
         }
         return listBookMark;
     }
 
     public BookMark getBookMarkbyClientAndBookID(long clientID, long bookID) {
         List<BookMark> list_book = getBookMarkByBookID(bookID);
-        for (BookMark temp: list_book) {
+        for (BookMark temp : list_book) {
             if (temp.getClient_id() == clientID) {
                 return temp;
             }
@@ -150,7 +175,7 @@ public class BookMarkDAO extends BookStoreAccess {
                 listBookMark.add(neededBookMark);
             }
         } catch (SQLException e) {
-            logger.debug("There is no bookMark with mark: " + mark);
+            logger.debug("There is no bookMark with mark: " + mark, e);
         }
         return listBookMark;
     }
@@ -165,10 +190,29 @@ public class BookMarkDAO extends BookStoreAccess {
                 insertBookMark.setInt(4, newBookMark.getMark());
                 insertBookMark.execute();
             } catch (SQLException e) {
-                logger.error("SQL request insert error", e);
+                logger.error("SQL request insert mark error", e);
             }
         } else {
             logger.debug("Mark already exists with ID: " + newBookMark.getID());
         }
     }
+
+    public void deleteByUserID(long userID) {
+        try {
+            deleteByUserID.setLong(1, userID);
+            deleteByUserID.execute();
+        } catch (SQLException e) {
+            logger.error("SQL arror in deleting deleteByUserID() method", e);
+        }
+    }
+
+    public void deleteByBookID(long bookID) {
+        try {
+            deleteByBookID.setLong(1, bookID);
+            deleteByBookID.execute();
+        } catch (SQLException e) {
+            logger.error("SQL arror in deleting deleteByBookID() method in HistoryDAO", e);
+        }
+    }
+
 }

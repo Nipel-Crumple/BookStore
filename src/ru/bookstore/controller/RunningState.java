@@ -45,50 +45,6 @@ public class RunningState implements State {
             return;
         }
 
-        if (cl.hasOption("add")) {
-            admin = Admin.getInstance(consoleView);
-            if (cl.getOptionValue("add").equalsIgnoreCase("client")) {
-                consoleView.print("Name: ");
-                String name = consoleView.readWholeLine();
-                consoleView.print("Login: ");
-                String login = consoleView.readLogin();
-                consoleView.print("Password: ");
-                String password = consoleView.readPassword();
-                admin.addNewClient(name, login, password);
-                consoleView.println("Client was added");
-                return;
-            }
-            if (cl.getOptionValue("add").equalsIgnoreCase("book")) {
-                consoleView.print("Name: ");
-                String name = consoleView.readWholeLine();
-                consoleView.print("Author: ");
-                String author = consoleView.readWholeLine();
-                consoleView.print("Genre: ");
-                String genre = consoleView.readWholeLine();
-                admin.addNewBook(name, author, genre);
-                consoleView.println("Book was added!");
-                return;
-            }
-        }
-
-        if (cl.hasOption("remove")) {
-            admin = Admin.getInstance(consoleView);
-            if (cl.getOptionValue("remove").equalsIgnoreCase("client")) {
-                consoleView.print("Login: ");
-                String login = consoleView.readLogin();
-                admin.removeClient(login);
-                consoleView.println("Client was removed");
-                return;
-            }
-            if (cl.getOptionValue("remove").equalsIgnoreCase("book")) {
-                consoleView.print("Name: ");
-                String name = consoleView.readWholeLine();
-                admin.removeBook(name);
-                consoleView.println("Book was removed!");
-                return;
-            }
-        }
-
         if (cl.hasOption("get")) {
             if (cl.getOptionValue("get").equalsIgnoreCase("mybooks")) {
                 Map<Book, BookMark> map = usrHelper.getClientBooks();
@@ -102,6 +58,18 @@ public class RunningState implements State {
                 consoleView.print("Something's going wrong in getting books");
                 return;
             }
+        }
+
+        if (cl.hasOption("rate")) {
+            consoleView.println("What book to rate?");
+            consoleView.printListBooks(usrHelper.getAllBooks());
+            consoleView.print("Book's Name: ");
+            String name = consoleView.readWholeLine();
+            consoleView.print("Mark: ");
+            int mark = consoleView.readInt();
+            usrHelper.rateBook(name, mark);
+            consoleView.readLine();
+            return;
         }
 
         if (cl.hasOption("put")) {
@@ -126,6 +94,7 @@ public class RunningState implements State {
         if (cl.hasOption("buy")) {
             usrHelper.buyBooks();
             consoleView.println("Has bought!");
+            usrCart.clearCart();
             return;
         }
 
@@ -138,8 +107,12 @@ public class RunningState implements State {
             if (cl.getOptionValue("show").equalsIgnoreCase("cart")) {
                 usrCart.showCart(consoleView);
                 return;
+            } else if (cl.getOptionValue("show").equalsIgnoreCase("history")){
+                consoleView.printMapBooks(usrHelper.getClientBooks());
+                return;
             } else {
                 consoleView.println("Mistake in getting cart");
+                return;
             }
         }
 

@@ -46,6 +46,9 @@ public class ConsoleView {
             return null;
         }
     }
+    public int readInt() {
+        return sc.nextInt();
+    }
 
 
     public String readPassword() {

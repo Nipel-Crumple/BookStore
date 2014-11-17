@@ -5,7 +5,6 @@ package ru.bookstore.DAO;
  */
 
 import java.sql.*;
-import java.util.*;
 
 import org.apache.log4j.Logger;
 
@@ -19,7 +18,7 @@ public class ClientDAO extends BookStoreAccess {
     private static String REQUEST_BY_LOGIN = "SELECT * FROM CLIENT WHERE LOGIN =?";
     private static String REQUEST_INSERT_CLIENT = "INSERT INTO CLIENT (ID, NAME, LOGIN, PASSWORD) VALUES(?,?,?,?)";
     private static String CHANGE_PASSWORD_REQUEST = "UPDATE CLIENT SET PASSWORD = ? WHERE ID= ?";
-    private static String REMOVE_CLIENT_REQUEST = "DELETE FROM CLIENT WHERE LOGIN= ?";
+    private static String REMOVE_CLIENT_REQUEST = "DELETE FROM CLIENT WHERE ID=?";
 
     private static PreparedStatement getClientByIdStmt;
 
@@ -57,7 +56,7 @@ public class ClientDAO extends BookStoreAccess {
         try {
             changePassword = con.prepareStatement(CHANGE_PASSWORD_REQUEST);
         } catch (SQLException e) {
-            logger.error("SQL exception in intialising of change passwor request", e);
+            logger.error("SQL exception in initialising of change password request", e);
         }
     }
 
@@ -67,7 +66,7 @@ public class ClientDAO extends BookStoreAccess {
         try {
             removeClient = con.prepareStatement(REMOVE_CLIENT_REQUEST);
         } catch (SQLException e) {
-            logger.error("SQL exception in intialising of change passwor request", e);
+            logger.error("SQL exception in initialising of change password request", e);
         }
     }
 
@@ -180,22 +179,22 @@ public class ClientDAO extends BookStoreAccess {
         }
     }
 
-    public boolean removeClient(String login) {
-        Client neededClient = getClientByLogin(login);
+    public boolean removeClient(long userID) {
+        Client neededClient = getClientById(userID);
 
         try {
 
             if (neededClient == null) {
-                logger.info("This login does not exists");
+                logger.info("This userID does not exists");
                 return true;
             } else {
                 try {
-                    removeClient.setString(1, login);
+                    removeClient.setLong(1, userID);
                     removeClient.execute();
-                    logger.info("Client has been added");
+                    logger.info("Client has been removed");
                     return true;
                 } catch (SQLException e) {
-                    logger.error("SQL request insert error: ", e);
+                    logger.error("SQL request remove error: ", e);
                 }
             }
         } catch (NullPointerException e1) {
@@ -208,8 +207,6 @@ public class ClientDAO extends BookStoreAccess {
 
     public static void main(String[] args) {
         ClientDAO cl = new ClientDAO();
-        if (cl.removeClient("Twister")) {
-            System.out.println("Deleted");
-        }
+
     }
 }

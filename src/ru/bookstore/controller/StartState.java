@@ -51,7 +51,7 @@ public class StartState implements State {
             } else if (cl.getOptionValue("set").equalsIgnoreCase("admin")) {
                 admin = Admin.getInstance(consoleView);
                 if (admin.createAdminSession()) {
-                    controller.setState(RunningState.getInstance());
+                    controller.setState(RunningAdminState.getInstance());
                     return;
                 }
             } else {

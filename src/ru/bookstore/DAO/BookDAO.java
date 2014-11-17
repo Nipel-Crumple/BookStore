@@ -22,7 +22,7 @@ public class BookDAO extends BookStoreAccess {
     private static String REQUEST_BY_NAME = "SELECT * FROM BOOK WHERE NAME = ?";
     private static String REQUEST_BY_AUTHOR = "SELECT * FROM BOOK WHERE AUTHOR = ?";
     private static String REQUEST_INSERT_BOOK = "INSERT INTO BOOK (ID, NAME, AUTHOR, GENRE) VALUES(?,?,?,?)";
-    private static String REMOVE_BOOK = "DELETE FROM BOOK WHERE NAME = ?";
+    private static String REMOVE_BOOK = "DELETE FROM BOOK WHERE ID = ?";
 
     private static PreparedStatement removeBook;
 
@@ -189,13 +189,13 @@ public class BookDAO extends BookStoreAccess {
         }
     }
 
-    public void removeBook(String name) {
-        Book neededBook = getBookByName(name);
+    public void removeBook(long bookID) {
+        Book neededBook = getBookById(bookID);
         if (neededBook == null) {
-            logger.debug("This name of Book does not exists " + name);
+            logger.debug("This name of Book does not exists " + bookID);
         } else {
             try {
-                removeBook.setString(1, name);
+                removeBook.setLong(1, bookID);
             } catch (SQLException e) {
                 logger.error("SQL request insert error", e);
             }
