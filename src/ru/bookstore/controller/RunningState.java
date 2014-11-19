@@ -2,13 +2,11 @@ package ru.bookstore.controller;
 
 import org.apache.commons.cli.CommandLine;
 import ru.bookstore.POJO.Book;
-import ru.bookstore.POJO.BookMark;
 import ru.bookstore.User.*;
 import ru.bookstore.admin.Admin;
 import ru.bookstore.view.ConsoleView;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Johnny D on 02.11.2014.
@@ -47,12 +45,12 @@ public class RunningState implements State {
 
         if (cl.hasOption("get")) {
             if (cl.getOptionValue("get").equalsIgnoreCase("mybooks")) {
-                Map<Book, BookMark> map = usrHelper.getClientBooks();
-                consoleView.printMapBooks(map);
+                List<Book> list = usrHelper.getClientBooks();
+                consoleView.printListBooks(list);
                 return;
             } else if (cl.getOptionValue("get").equalsIgnoreCase("allbooks")) {
-                Map<Book, Integer> mapBook = usrHelper.getAllBooksWithMarks();
-                consoleView.printMapBooksWithMarks(mapBook);
+                List<Book> listBook = usrHelper.getAllBooks();
+                consoleView.printListBooksWithMarks(listBook);
                 return;
             } else {
                 consoleView.print("Something's going wrong in getting books");
@@ -108,7 +106,7 @@ public class RunningState implements State {
                 usrCart.showCart(consoleView);
                 return;
             } else if (cl.getOptionValue("show").equalsIgnoreCase("history")){
-                consoleView.printMapBooks(usrHelper.getClientBooks());
+                consoleView.printListBooks(usrHelper.getClientBooks());
                 return;
             } else {
                 consoleView.println("Mistake in getting cart");

@@ -1,25 +1,30 @@
 package ru.bookstore.User;
 
-import ru.bookstore.DAO.*;
+import ru.bookstore.DAO.BookDAO;
+import ru.bookstore.DAO.BookMarkDAO;
 import ru.bookstore.DAO.ClientDAO;
 import ru.bookstore.DAO.HistoryDAO;
-import ru.bookstore.POJO.*;
+import ru.bookstore.POJO.Book;
+import ru.bookstore.POJO.BookMark;
+import ru.bookstore.POJO.Client;
+import ru.bookstore.POJO.History;
 import ru.bookstore.view.ConsoleView;
 
-import java.util.*;
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Johnny D on 28.10.2014.
  */
 public class UserHelper {
     private ConsoleView consoleView;
-    Map<Book, BookMark> mapBooksAndMarks = new TreeMap<Book, BookMark>(new Comparator<Book>() {
-        @Override
-        public int compare(Book o1, Book o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    });
+//    Map<Book, BookMark> mapBooksAndMarks = new TreeMap<Book, BookMark>(new Comparator<Book>() {
+//        @Override
+//        public int compare(Book o1, Book o2) {
+//            return o1.getName().compareTo(o2.getName());
+//        }
+//    });
 
     private Client currentClient;
 
@@ -68,7 +73,7 @@ public class UserHelper {
     }
 
     public void buyBooks() {
-        for(Book temp : usrCart.getNeededBooks()) {
+        for (Book temp : usrCart.getNeededBooks()) {
             Calendar calendar = Calendar.getInstance();
             Date date = new Date(calendar.getTimeInMillis());
             History newHistory = new History(currentClient.getID(), temp.getID(), date);
@@ -107,48 +112,21 @@ public class UserHelper {
     public void exitUserSession() {
         usrCart.clearCart();
         currentClient = null;
-        mapBooksAndMarks.clear();
     }
 
-    public Map<Book, BookMark> getClientBooks() {
-        List<History> currentClientHistory = clientHistoryDB.getHistoryByClientID(currentClient.getID());
-
-        for (History temp : currentClientHistory) {
-            Book book = clientBookDB.getBookById(temp.getBook_id());
-            BookMark bookMark = clientBookMarkDAO.getBookMarkbyClientAndBookID(currentClient.getID(), temp.getBook_id());
-            mapBooksAndMarks.put(book, bookMark);
-        }
-        return mapBooksAndMarks;
+    public List<Book> getClientBooks() {
+        return clientBookDB.getClientBooks(currentClient.getID());
     }
 
     public List<Book> getAllBooks() {
         return clientBookDB.getAllBooks();
     }
 
-    public Map<Book, Integer> getAllBooksWithMarks() {
-        List<Book> listBook = clientBookDB.getAllBooks();
-        Map<Book, Integer> map = new TreeMap<Book, Integer>(new Comparator<Book>() {
-            @Override
-            public int compare(Book o1, Book o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+    public List<History> getHistory() {
+        List<History> historyList = clientHistoryDB.getHistoryByClientID(currentClient.getID());
+        
 
-        for(Book temp : listBook) {
-            int summ = 0;
-            int iter = 0;
-            for (BookMark tempBookMark : clientBookMarkDAO.getBookMarkByBookID(temp.getID())) {
-                summ += tempBookMark.getMark();
-                iter++;
-            }
-            if (iter != 0){
-                Integer average = summ / iter;
-                map.put(temp, average);
-            } else {
-                map.put(temp, 0);
-            }
-        }
-        return map;
+        return historyList;
     }
 
     public void rateBook(String bookName, int mark) {

@@ -182,26 +182,21 @@ public class HistoryDAO extends BookStoreAccess {
         }
     }
 
-    public void deleteByUserID(long userID) {
-        try {
-            deleteByUserID.setLong(1, userID);
-            deleteByUserID.execute();
-        } catch (SQLException e) {
-            logger.error("SQL arror in deleting deleteByUserID() method in HistoryDAO", e);
-        }
-    }
-
-    public void deleteByBookID(long bookID) {
-        try {
-            deleteByBookID.setLong(1, bookID);
-            deleteByBookID.execute();
-        } catch (SQLException e) {
-            logger.error("SQL arror in deleting deleteByBookID() method in HistoryDAO", e);
-        }
-    }
-
-//    public static void main(String[] args) {
-//        HistoryDAO h = new HistoryDAO();
-//        h.deleteByUserID(123L);
+//    public void deleteByUserID(long userID) {
+//        try {
+//            deleteByUserID.setLong(1, userID);
+//            deleteByUserID.execute();
+//        } catch (SQLException e) {
+//            logger.error("SQL arror in deleting deleteByUserID() method in HistoryDAO", e);
+//        }
+//    }
+//
+//    public void deleteByBookID(long bookID) {
+//        try {
+//            deleteByBookID.setLong(1, bookID);
+//            deleteByBookID.execute();
+//        } catch (SQLException e) {
+//            logger.error("SQL arror in deleting deleteByBookID() method in HistoryDAO", e);
+//        }
 //    }
 }

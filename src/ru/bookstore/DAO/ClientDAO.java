@@ -5,9 +5,11 @@ package ru.bookstore.DAO;
  */
 
 import java.sql.*;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import ru.bookstore.POJO.Book;
 import ru.bookstore.POJO.Client;
 
 public class ClientDAO extends BookStoreAccess {
@@ -19,6 +21,7 @@ public class ClientDAO extends BookStoreAccess {
     private static String REQUEST_INSERT_CLIENT = "INSERT INTO CLIENT (ID, NAME, LOGIN, PASSWORD) VALUES(?,?,?,?)";
     private static String CHANGE_PASSWORD_REQUEST = "UPDATE CLIENT SET PASSWORD = ? WHERE ID= ?";
     private static String REMOVE_CLIENT_REQUEST = "DELETE FROM CLIENT WHERE ID=?";
+
 
     private static PreparedStatement getClientByIdStmt;
 
@@ -202,11 +205,6 @@ public class ClientDAO extends BookStoreAccess {
         }
 
         return false;
-
     }
 
-    public static void main(String[] args) {
-        ClientDAO cl = new ClientDAO();
-
-    }
 }

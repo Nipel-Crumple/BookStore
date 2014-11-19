@@ -18,8 +18,6 @@ public class Admin {
 
     protected ClientDAO clientAccessDB = new ClientDAO();
     protected BookDAO clientBookDB = new BookDAO();
-    protected BookMarkDAO clientBookMarkDB = new BookMarkDAO();
-    protected HistoryDAO clientHistoryDB = new HistoryDAO();
 
     private Admin(ConsoleView consoleView) {
         this.consoleView = consoleView;
@@ -77,15 +75,12 @@ public class Admin {
 
     public void deleteClient(String login) {
         long userID = clientAccessDB.getClientByLogin(login).getID();
-        clientHistoryDB.deleteByUserID(userID);
-        clientBookMarkDB.deleteByUserID(userID);
         clientAccessDB.removeClient(userID);
     }
 
     public void deleteBook(String name) {
         long bookID = clientBookDB.getBookByName(name).getID();
-        clientHistoryDB.deleteByBookID(bookID);
-        clientBookMarkDB.deleteByBookID(bookID);
         clientBookDB.removeBook(bookID);
     }
+
 }

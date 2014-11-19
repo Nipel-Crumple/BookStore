@@ -92,15 +92,15 @@ public class ConsoleView {
         }
     }
 
-    public void printMapBooksWithMarks(Map<Book, Integer> map) {
+    public void printListBooksWithMarks(List<Book> list) {
         printf("%-25s", "Name");
         printf("%-25s", "Author");
-        printf("%-25s", "Mark");
+        printf("%-25s", "Average Mark");
         println();
-        for (Map.Entry<Book, Integer> temp : map.entrySet()) {
-            printf("%-25s", temp.getKey().getName());
-            printf("%-25s", temp.getKey().getAuthor());
-            printf("%-25s", temp.getValue().toString());
+        for (Book temp : list) {
+            printf("%-25s", temp.getName());
+            printf("%-25s", temp.getAuthor());
+            printf("%-25s", temp.getAvgMark());
             println();
         }
 

@@ -18,6 +18,8 @@ public class Book {
     private String author = null;
     private String genre = null;
 
+    private int avgMark = 0;
+
     private int hash = 0;
 
     public Book(String name, String author, String genre) {
@@ -27,6 +29,16 @@ public class Book {
         setID();
         hash = hashCode();
     }
+
+    public Book(long id, String name, String author, String genre, int avgMark) {
+        setName(name);
+        setAuthor(author);
+        setGenre(genre);
+        setID(id);
+        setAvgMark(avgMark);
+        hash = hashCode();
+    }
+
 
     public Book(long id, String name, String author, String genre) {
         setName(name);
@@ -67,6 +79,14 @@ public class Book {
 
     public void setID(long id) {
         this.id = id;
+    }
+
+    public int getAvgMark() {
+        return avgMark;
+    }
+
+    public void setAvgMark(int avgMark) {
+        this.avgMark = avgMark;
     }
 
     public String getName() {

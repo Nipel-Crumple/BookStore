@@ -6,7 +6,6 @@ package ru.bookstore.DAO;
 
 import java.sql.*;
 import java.util.*;
-
 import org.apache.log4j.Logger;
 
 import ru.bookstore.POJO.Book;
@@ -18,11 +17,24 @@ public class BookDAO extends BookStoreAccess {
     private static final Logger logger = Logger.getLogger("BookDAO");
 
     private static String REQUEST_BY_ID = "SELECT * FROM BOOK WHERE ID = ?";
-    private static String REQUEST_ALL_BOOKS = "SELECT * FROM BOOK";
+    private static String REQUEST_ALL_BOOKS = "SELECT b.*, AVG(bm.mark) avg\n" +
+                                              "FROM BOOK_MARK bm, BOOK b\n" +
+                                              "WHERE b.ID = bm.BOOK_ID\n" +
+                                              "GROUP BY b.name, b.author,b.GENRE, b.ID";
     private static String REQUEST_BY_NAME = "SELECT * FROM BOOK WHERE NAME = ?";
     private static String REQUEST_BY_AUTHOR = "SELECT * FROM BOOK WHERE AUTHOR = ?";
     private static String REQUEST_INSERT_BOOK = "INSERT INTO BOOK (ID, NAME, AUTHOR, GENRE) VALUES(?,?,?,?)";
     private static String REMOVE_BOOK = "DELETE FROM BOOK WHERE ID = ?";
+    private static String RATE_REQUEST = "SELECT b.*, AVG(bm.mark) avg\n" +
+                                         "FROM BOOK_MARK bm, BOOK b\n" +
+                                         "WHERE b.ID = bm.BOOK_ID\n" +
+                                         "GROUP BY b.name, b.author,b.GENRE, b.ID";
+
+    private static String GET_CLIENT_BOOKS = "SELECT b.NAME, b.AUTHOR, b.GENRE\n" +
+            "FROM BOOK b, CLIENT cl, HISTORY h\n" +
+            "WHERE cl.ID = h.CLIENT_ID \n" +
+            "  AND b.ID = h.BOOK_ID\n" +
+            "  AND cl.ID=?";
 
     private static PreparedStatement removeBook;
 
@@ -84,6 +96,25 @@ public class BookDAO extends BookStoreAccess {
         }
     }
 
+    private static PreparedStatement rateRequest;
+
+    static {
+        try {
+            rateRequest = con.prepareStatement(RATE_REQUEST);
+        } catch (SQLException e) {
+            logger.error("SQL Exception in initialising of rateRequest");
+        }
+    }
+
+    private static PreparedStatement clientBooks;
+
+    static {
+        try {
+            clientBooks = con.prepareStatement(GET_CLIENT_BOOKS);
+        } catch (SQLException e) {
+            logger.error("SQL exception in initialising of change password request", e);
+        }
+    }
 
     public List<Book> getAllBooks() {
         Book newBook = null;
@@ -91,6 +122,7 @@ public class BookDAO extends BookStoreAccess {
         String name;
         String author;
         String genre;
+        int avgMark = 0;
 
         ResultSet resultSet;
         try {
@@ -100,7 +132,8 @@ public class BookDAO extends BookStoreAccess {
                 name = resultSet.getString("NAME");
                 author = resultSet.getString("AUTHOR");
                 genre = resultSet.getString("GENRE");
-                newBook = new Book(id, name, author, genre);
+                avgMark = resultSet.getInt("AVG");
+                newBook = new Book(id, name, author, genre, avgMark);
                 if (!wholeBookList.contains(newBook)) {
                     wholeBookList.add(newBook);
                 }
@@ -110,6 +143,8 @@ public class BookDAO extends BookStoreAccess {
         }
         return wholeBookList;
     }
+
+
 
     public Book getBookById(long id) {
         Book newBook = null;
@@ -200,6 +235,31 @@ public class BookDAO extends BookStoreAccess {
                 logger.error("SQL request insert error", e);
             }
         }
+    }
+
+    public List<Book> getClientBooks(long clientID) {
+        Book newBook = null;
+        long id;
+        String name;
+        String author;
+        String genre;
+        List<Book> clientsBooks = new ArrayList<Book>();
+
+        ResultSet resultSet;
+        try {
+            resultSet = getAllBooks.executeQuery();
+            while(resultSet.next()) {
+                id = resultSet.getLong("ID");
+                name = resultSet.getString("NAME");
+                author = resultSet.getString("AUTHOR");
+                genre = resultSet.getString("GENRE");
+                newBook = new Book(id, name, author, genre);
+                clientsBooks.add(newBook);
+            }
+        } catch (SQLException e) {
+            logger.error("mistake in getting all books", e);
+        }
+        return clientsBooks;
     }
 }
 

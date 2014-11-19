@@ -197,22 +197,22 @@ public class BookMarkDAO extends BookStoreAccess {
         }
     }
 
-    public void deleteByUserID(long userID) {
-        try {
-            deleteByUserID.setLong(1, userID);
-            deleteByUserID.execute();
-        } catch (SQLException e) {
-            logger.error("SQL arror in deleting deleteByUserID() method", e);
-        }
-    }
-
-    public void deleteByBookID(long bookID) {
-        try {
-            deleteByBookID.setLong(1, bookID);
-            deleteByBookID.execute();
-        } catch (SQLException e) {
-            logger.error("SQL arror in deleting deleteByBookID() method in HistoryDAO", e);
-        }
-    }
+//    public void deleteByUserID(long userID) {
+//        try {
+//            deleteByUserID.setLong(1, userID);
+//            deleteByUserID.execute();
+//        } catch (SQLException e) {
+//            logger.error("SQL error in deleting deleteByUserID() method", e);
+//        }
+//    }
+//
+//    public void deleteByBookID(long bookID) {
+//        try {
+//            deleteByBookID.setLong(1, bookID);
+//            deleteByBookID.execute();
+//        } catch (SQLException e) {
+//            logger.error("SQL arror in deleting deleteByBookID() method in HistoryDAO", e);
+//        }
+//    }
 
 }
