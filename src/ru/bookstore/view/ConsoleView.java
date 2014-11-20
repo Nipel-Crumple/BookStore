@@ -1,12 +1,14 @@
 package ru.bookstore.view;
 
-import java.io.*;
-import java.util.*;
-
 import org.apache.log4j.Logger;
 import ru.bookstore.POJO.Book;
 import ru.bookstore.POJO.BookMark;
 
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +48,7 @@ public class ConsoleView {
             return null;
         }
     }
+
     public int readInt() {
         return sc.nextInt();
     }
@@ -95,15 +98,29 @@ public class ConsoleView {
     public void printListBooksWithMarks(List<Book> list) {
         printf("%-25s", "Name");
         printf("%-25s", "Author");
+        printf("%-25s", "Genre");
         printf("%-25s", "Average Mark");
         println();
         for (Book temp : list) {
             printf("%-25s", temp.getName());
             printf("%-25s", temp.getAuthor());
+            printf("%-25s", temp.getGenre());
             printf("%-25s", temp.getAvgMark());
             println();
         }
+    }
 
+    public void printClientBooks(List<Book> list) {
+        printf("%-25s", "Name");
+        printf("%-25s", "Author");
+        printf("%-25s", "Date of buy");
+        println();
+        for (Book temp : list) {
+            printf("%-25s", temp.getName());
+            printf("%-25s", temp.getAuthor());
+            printf("%-25s", temp.getDate().toString());
+            println();
+        }
     }
 
     public void println(String s) {

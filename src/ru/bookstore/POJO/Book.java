@@ -1,5 +1,6 @@
 package ru.bookstore.POJO;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -17,6 +18,8 @@ public class Book {
     private String name = null;
     private String author = null;
     private String genre = null;
+    private Date date = new Date();
+
 
     private int avgMark = 0;
 
@@ -63,6 +66,13 @@ public class Book {
         return true;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return this.date;
+    }
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));

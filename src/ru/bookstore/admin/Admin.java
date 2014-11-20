@@ -8,6 +8,8 @@ import ru.bookstore.POJO.Book;
 import ru.bookstore.POJO.Client;
 import ru.bookstore.view.ConsoleView;
 
+import java.util.List;
+
 /**
  * Created by Johnny D on 04.11.2014.
  */
@@ -57,6 +59,10 @@ public class Admin {
         } else {
             return false;
         }
+    }
+
+    public List<Book> getAllBooks() {
+        return clientBookDB.getAllBooks();
     }
 
     public void exitUserSession() {

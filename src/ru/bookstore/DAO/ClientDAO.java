@@ -4,13 +4,12 @@ package ru.bookstore.DAO;
  * Created by Johnny D on 07.10.2014.
  */
 
-import java.sql.*;
-import java.util.List;
-
 import org.apache.log4j.Logger;
-
-import ru.bookstore.POJO.Book;
 import ru.bookstore.POJO.Client;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ClientDAO extends BookStoreAccess {
 
@@ -206,5 +205,4 @@ public class ClientDAO extends BookStoreAccess {
 
         return false;
     }
-
 }

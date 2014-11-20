@@ -42,7 +42,7 @@ public class Controller {
         options.addOption("state", false, "Current state");
         options.addOption("get", true, "get some info about <arg>");
         options.addOption("put", false, "put to cart");
-        options.addOption("show", true, "show your cart");
+        options.addOption("show", true, "show your <arg>=cart or <arg>=your buy's history");
         options.addOption("remove", false, "remove book from your cart");
         options.addOption("clear", false, "clear all your cart");
         options.addOption("buy", false, "buy all books in your cart");

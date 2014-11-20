@@ -1,8 +1,11 @@
 package ru.bookstore.controller;
 
 import org.apache.commons.cli.CommandLine;
+import ru.bookstore.POJO.Book;
 import ru.bookstore.admin.Admin;
 import ru.bookstore.view.ConsoleView;
+
+import java.util.List;
 
 
 /**
@@ -61,6 +64,19 @@ public class RunningAdminState implements State {
                 return;
             }
         }
+
+        if (cl.hasOption("get")) {
+            if (cl.getOptionValue("get").equalsIgnoreCase("allbooks")) {
+                admin = Admin.getInstance(consoleView);
+                List<Book> listBook = admin.getAllBooks();
+                consoleView.printListBooksWithMarks(listBook);
+                return;
+            } else {
+                consoleView.print("Something's going wrong in getting books");
+                return;
+            }
+        }
+
 
         if (cl.hasOption("delete")) {
             admin = Admin.getInstance(consoleView);

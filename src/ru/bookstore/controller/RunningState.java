@@ -106,7 +106,7 @@ public class RunningState implements State {
                 usrCart.showCart(consoleView);
                 return;
             } else if (cl.getOptionValue("show").equalsIgnoreCase("history")){
-                consoleView.printListBooks(usrHelper.getClientBooks());
+                consoleView.printClientBooks(usrHelper.getClientBooks());
                 return;
             } else {
                 consoleView.println("Mistake in getting cart");
@@ -121,7 +121,7 @@ public class RunningState implements State {
 
         if (cl.hasOption("exit")) {
             controller.getUsrHelper().exitUserSession();
-            admin.exitUserSession();
+            usrHelper.exitUserSession();
             controller.setState(StartState.getInstance());
             return;
         }

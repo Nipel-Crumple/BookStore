@@ -122,13 +122,6 @@ public class UserHelper {
         return clientBookDB.getAllBooks();
     }
 
-    public List<History> getHistory() {
-        List<History> historyList = clientHistoryDB.getHistoryByClientID(currentClient.getID());
-        
-
-        return historyList;
-    }
-
     public void rateBook(String bookName, int mark) {
         long bookID = clientBookDB.getBookByName(bookName).getID();
         long clientID = currentClient.getID();
